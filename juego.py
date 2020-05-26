@@ -1,4 +1,3 @@
-
 import PySimpleGUI as sg
 import random
 import string
@@ -76,7 +75,7 @@ atrilLetras = [[' ' for j in range(5)] for i in range(7)]
 def botonesLetras(x,y):
     atrilLetras[x][y] = BotonLetra(x,y)
     return atrilLetras[x][y].button
-matizTablero = [[0 for j in range(15)] for i in range(15)]
+matizTablero = [[0 for j in range(15)] for i in range(15)] # [[0,0,0,0,0,0,0,],[0,0,0,0,0,0,0]......]
 def botonTablero(x,y):
     matizTablero[x][y] = BotonTablero(x,y)
     return matizTablero[x][y].button
@@ -139,3 +138,5 @@ def main(listaConfiguracion=listaPorDefecto):
 
 if __name__ == '__main__':
     main()
+
+#probando si se modifico esta cosa en github
