@@ -23,3 +23,5 @@ while True:
     if event == 'Puntajes':
         print('estamos en eso')
 window.close()
+
+#prueva agregar cosas por github
