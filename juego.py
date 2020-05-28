@@ -105,36 +105,34 @@ def desbloquearAtril():
     for x in range(7):
         AtrilLetras[x].desbloquear()
 
-
-def confirmarPalabra1 (letrasTurno):
-    palabraTurno = []
-    for i in range(len(letrasTurno)):
-        x = letrasTurno[i][0]
-        y = letrasTurno[i][1]
-        palabraTurno.append(TableroLetras[x][y].getLetra())
-    palabra = ''.join(palabraTurno)
-    if (parse(palabra,tokenize = True,tags = True,chunks = False) == '/NN'):
+def confirmarPalabra(palabra,letrasPalabra,listaLetrasUsada):
+    palabraSrt = ''.join(palabra)
+    dato = parse(palabraSrt,tokenize = True,tags = True,chunks = False).replace(palabraSrt,'')
+    if( dato in ['/NM','/VB','/JJ']):
+        print(palabraSrt +' es valida')
+        del listaLetrasUsada[:]
+        del palabra[:]
+        del letrasPalabra [:]
         return True
     else:
+        print(palabraSrt +' NO es valida')
+        print(dato)
+        for i in range(len(palabra)):
+            AtrilLetras[listaLetrasUsada[i]].setLetra(palabra[i])
+        for i in letrasPalabra:
+            TableroLetras[i[0]][i[1]].vaciar()
+        del listaLetrasUsada[:]
+        del palabra[:]
+        del letrasPalabra [:]
         return False
-def confirmarPalabra(letrasTurno):
-    if confirmarPalabra1(letrasTurno):
-        print('palabra valida')
-    else:
-        print('palabra no valida')
-        for i in range(len(letrasTurno)):
-            x = letrasTurno[i][0]
-            y = letrasTurno[i][1]
-            TableroLetras[x][y].vaciar()
-            desbloquearAtril()
 
 
 #Interface grafica
 Atril = [[botonesAtril(x)for x in range(7)]]                                    #creo el atril de 7 botones
 Tablero = [[botonTablero(x,y) for x in range(15)] for y in range(15)]           #creo el el trablero de 15x15 botones
 botonesTurno= [
-    [sg.Button('Confirmar'),sg.Button('Cambiar')],
-    [sg.Button('Pasar')],
+    [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta'),sg.Button('Cambiar',tooltip='cambiar letras')],
+    [sg.Button('Pasar',tooltip='Pasar turno')],
 ]
 columna1 = [                                                                    #Contiene el tablero de juego y atril con las fichas de la mano
     [sg.Column(Tablero)],
@@ -151,44 +149,62 @@ columna2= [                                                                     
 layout  = [
     [sg.Text('SCREBLE')],
     [sg.Column(columna1),sg.Column(columna2)],
-    [sg.Button('Comenzar',auto_size_button=False),sg.Button('Salir',auto_size_button=False)]
+    [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida'),sg.Button('Salir',auto_size_button=False,tooltip='salir al menu')]
 ]
 cordAtril = ['(0, 0)0','(1, 0)1','(2, 0)2','(3, 0)3','(4, 0)4','(5, 0)5','(6, 0)6'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
+
+
+
+
 #Programa
 
 def main(listaConfiguracion=listaPorDefecto):
-    letrasTurno =[]
     window = sg.Window('', layout)
+    palabra =[]                                                                 #la palabra que se forma con las letras que se ponenen
+    letrasPalabra = []                                                          #la posisicion donde se ponen las letras
+    listaLetrasUsada = []                                                       #la posicion del atril de donde se sacan las letras
     while True:
-        click = 'Atril'
+
         event , values = window.read()
         bloquearTablero()
 
         if event is None or event == 'Salir':
-                break
-        elif event in ['Confirmar','Cambiar','Pasar','Comenzar']:
-            if event is 'Comenzar':
-                window['Comenzar'].update(disabled=True)
-                repartirFichas(listaConfiguracion['CantidadLetras'])
+            break
+        if event is 'Comenzar':
+            window['Comenzar'].update(disabled=True)
+            repartirFichas(listaConfiguracion['CantidadLetras'])
+            asignarPuntajesTablero()
+        turno = True
+        if turno:
+            if event in ['Confirmar','Cambiar','Pasar','Comenzar']:
+                if event is 'Confirmar':
+                    if(confirmarPalabra(palabra,letrasPalabra,listaLetrasUsada)): #comprueva si la palabra es valida
+                        print('aca falta lo de sumar los puntos')
+                        turno = False
+                        repartirFichas(listaConfiguracion['CantidadLetras'])
+                    else:                                                       #si no es valida borra la palabra guardada, la posicion de las letras y desbloquea todo el atril
+                        desbloquearAtril()
 
-                asignarPuntajesTablero()
-            if event is 'Confirmar':
-                confirmarPalabra(letrasTurno)
+                if event is 'Pasar':
+                    turno = False
+                    repartirFichas(listaConfiguracion['CantidadLetras'])
 
-
-        elif event in cordAtril:
-            cord = event
-            pos = cord
-            letra = AtrilLetras[int(pos[1])].getLetra()
-            desbloquerTablero()
-
+            elif event in cordAtril:
+                cord = event
+                pos = cord
+                letra = AtrilLetras[int(pos[1])].getLetra()
+                desbloquerTablero()
+            else:
+                cord = event
+                TableroLetras[cord[0]][cord[1]].setLetra(letra)
+                letrasPalabra.append(cord)
+                palabra.append(letra)
+                AtrilLetras[int(pos[1])].vaciar()                               #bloque la ultima lesta  del atil que se toco
+                listaLetrasUsada.append(int(pos[1]))
+                bloquearTablero()
         else:
-            cord = event
-            letrasTurno.append(cord)
-            TableroLetras[cord[0]][cord[1]].setLetra(letra)
-            AtrilLetras[int(pos[1])].bloquear()
-            bloquearTablero()
-
+            repartirFichas(listaConfiguracion['CantidadLetras'])
+            print('aca va el turno de la maquina')
     window.close()
 if __name__ == '__main__':
     main()
