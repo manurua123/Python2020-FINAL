@@ -20,8 +20,8 @@ def nivel_medio(letrasPuntos,letrasCantidad):
 
 def nivel_dificil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
-        letrasPuntos[i] = letrasPuntos[i] *2
-        letrasCantidad[i] = letrasCantidad[i]*2
+        letrasPuntos[i] = letrasPuntos[i]
+        letrasCantidad[i] = letrasCantidad[i]
     tipos= ['/NM','/VB','/JJ']
     tipoPalabra=list(random.choice(tipos))
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabre':tipoPalabra}
