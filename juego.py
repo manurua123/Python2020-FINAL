@@ -108,23 +108,25 @@ def desbloquearAtril():
 def confirmarPalabra(palabra,letrasPalabra,listaLetrasUsada):
     palabraSrt = ''.join(palabra)
     dato = parse(palabraSrt,tokenize = True,tags = True,chunks = False).replace(palabraSrt,'')
-    if( dato in ['/NM','/VB','/JJ']):
+    print(palabraSrt +' es un ' + dato)
+    if(dato in ['/NM','/VB','/JJ']):
         print(palabraSrt +' es valida')
-        del listaLetrasUsada[:]
-        del palabra[:]
-        del letrasPalabra [:]
-        return True
+        return True,
     else:
         print(palabraSrt +' NO es valida')
-        print(dato)
         for i in range(len(palabra)):
             AtrilLetras[listaLetrasUsada[i]].setLetra(palabra[i])
         for i in letrasPalabra:
             TableroLetras[i[0]][i[1]].vaciar()
-        del listaLetrasUsada[:]
-        del palabra[:]
-        del letrasPalabra [:]
         return False
+
+def sumarPuntos(palabra,listaPorDefecto):
+    palabraSrt = ''.join(palabra)
+    suma = 0
+    for i in palabraSrt:
+        suma = suma + listaPorDefecto['PuntajeLetra'][i]
+    print('puntos de la pabra {}: {}'.format(palabraSrt,suma))
+    return suma
 
 
 #Interface grafica
@@ -141,8 +143,8 @@ columna1 = [                                                                    
 ]
 columna2= [                                                                     #contiene los puntajes y el tiempo que resta del turno
         [sg.Text('PUNTAJE')],
-        [sg.Text('Jugador'),sg.Text('---')],
-        [sg.Text('PC'),sg.Text('---')],
+        [sg.Text('Jugador'),sg.Text('---',key ='contadorPuntosPJ')],
+        [sg.Text('PC'),sg.Text('---',key ='contadorPuntosPC')],
         [sg.Text('TIEMPO')],
         [sg.Text('---')],
 ]
@@ -153,9 +155,6 @@ layout  = [
 ]
 cordAtril = ['(0, 0)0','(1, 0)1','(2, 0)2','(3, 0)3','(4, 0)4','(5, 0)5','(6, 0)6'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
 
-
-
-
 #Programa
 
 def main(listaConfiguracion=listaPorDefecto):
@@ -163,11 +162,13 @@ def main(listaConfiguracion=listaPorDefecto):
     palabra =[]                                                                 #la palabra que se forma con las letras que se ponenen
     letrasPalabra = []                                                          #la posisicion donde se ponen las letras
     listaLetrasUsada = []                                                       #la posicion del atril de donde se sacan las letras
+    puntosPJ = 0
+    puntosPC = 0
     while True:
-
         event , values = window.read()
         bloquearTablero()
-
+        window['contadorPuntosPJ'].update(puntosPJ)
+        window['contadorPuntosPC'].update(puntosPC)
         if event is None or event == 'Salir':
             break
         if event is 'Comenzar':
@@ -179,16 +180,19 @@ def main(listaConfiguracion=listaPorDefecto):
             if event in ['Confirmar','Cambiar','Pasar','Comenzar']:
                 if event is 'Confirmar':
                     if(confirmarPalabra(palabra,letrasPalabra,listaLetrasUsada)): #comprueva si la palabra es valida
-                        print('aca falta lo de sumar los puntos')
+                        puntosPJ = puntosPJ + sumarPuntos(palabra,listaPorDefecto)
+                        window['contadorPuntosPJ'].update(puntosPJ)
                         turno = False
                         repartirFichas(listaConfiguracion['CantidadLetras'])
                     else:                                                       #si no es valida borra la palabra guardada, la posicion de las letras y desbloquea todo el atril
                         desbloquearAtril()
+                    del listaLetrasUsada[:]
+                    del palabra[:]
+                    del letrasPalabra [:]
 
                 if event is 'Pasar':
                     turno = False
                     repartirFichas(listaConfiguracion['CantidadLetras'])
-
             elif event in cordAtril:
                 cord = event
                 pos = cord
