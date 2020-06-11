@@ -78,7 +78,6 @@ TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]               
 def botonTablero(x,y):                                                          #lleno la matriz vacia con botones de tipo BotonTablero
     TableroLetras[x][y] = BotonTablero(x,y)
     return TableroLetras[x][y].boton
-
 def asignarPuntajesTablero():
     for i in range(15):
         for j in range(15):
