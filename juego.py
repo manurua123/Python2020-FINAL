@@ -235,13 +235,11 @@ columna2= [                                                                     
 ]
 
 layout  = [
-    [sg.Text('SCREBLE_AR',font=("Helvetica", 20),size=(50,1))],
+    [sg.Text('SCREBLE_AR',font=("Helvetica", 20,'bold'),size=(50,1))],
     [sg.Column(columna1),sg.Column(columna2)],
 
 ]
 cordAtril = ['(0, 0)0','(1, 0)1','(2, 0)2','(3, 0)3','(4, 0)4','(5, 0)5','(6, 0)6'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
-layout2 =  [[sg.Ok(), sg.Cancel()]]
-window2 = sg.Window('', layout2,font=("Helvetica", 12),size=(100,100))
 #Programa
 
 def main(listaConfiguracion=listaPorDefecto):
