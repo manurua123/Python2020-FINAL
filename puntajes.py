@@ -1,45 +1,80 @@
 import PySimpleGUI as sg
 import json
+from operator import itemgetter
+sg.SetOptions(background_color='#222831',
+       text_element_background_color='#222831',
+       element_background_color='#9FB8AD',
+       button_color=('#222831','#00adb5'),
+       text_justification='center',
+       border_width=1,
 
-def obtener_listado(ruta,nivel_seleccionado):
-    archivo_niveles=open(ruta,'r')
-    lista_niveles=json.loads(archivo_niveles)
-    json.close()
-    if nivel_seleccionado is 'Nivel facil':
-        dicc_niveles=lista_niveles['nivel_facil']         #se guarda en el dicc a los puntajes del modo facil
-        ventana_puntajes('Nivel facil',dicc_niveles)
-    if nivel_seleccionado is 'Nivel medio':
-        dicc_niveles=lista_niveles['nivel_medio']         #se guarda en el dicc a los puntajes del modo facil
-        ventana_puntajes('Nivel medio',dicc_niveles)
-    if nivel_seleccionado is 'Nivel dificil':
-        dicc_niveles=lista_niveles['nivel_dificil']         #se guarda en el dicc a los puntajes del modo facil
-        ventana_puntajes('Nivel dificil',dicc_niveles)
+       )
 
-def ventana_puntajes(nivel,dicc_niveles):
-    layout=[
-     [sg.Text('Puntejes del',nivel)],
-     [sg.Text(dicc_niveles)]
-    ]
+def abrirArchivo(ruta,nivel):
+    with open(ruta) as file:
+        data = json.load(file)
+        file.close()
+    return(data[nivel])
+
+
+def mostrarValores(datos,lista):
+    newlist = sorted(datos, key=itemgetter('puntaje'), reverse=True)
+    aux = 0
+    for i in newlist:
+        if(aux < 10):
+            lista.append(i)
+        aux =+1
+def mostrarValoresTotal(ruta,lista):
+    with open(ruta) as file:
+        dato = json.load(file)
+        file.close()
+    listaAux = []
+    for i in dato['nivelFacil']:
+        listaAux.append(i)
+    for i in dato['nivelMedio']:
+        listaAux.append(i)
+    for i in dato['nivelDificil']:
+        listaAux.append(i)
+    newlist = sorted(listaAux, key=itemgetter('puntaje'), reverse=True)
+    aux = 0
+    for i in newlist:
+        if(aux < 10):
+            lista.append(i)
+        aux = aux + 1
 
 layout_puntajes = [
- [sg.Text('Seleccione top 10 puntajes' , size=(20,2) , font=('Arial',12,'bold'))],
- [sg.Button('Nivel facil' , size=(20,2) , tooltip='recibira un listado de los 10 mejores puntajes del nivel facil')],
- [sg.Button('Nivel medio' , size=(20,2) , tooltip='recibir un listado de los 10 mejores puntajes del nivel medio')],
- [sg.Button('Nivel dificil' , size=(20,2) , tooltip='recibir un listado de los 10 mejores puntajes del nivel medio')]
+ [sg.Text('TOP 10' , size=(550,2) ,font=("Helvetica", 15,'bold')),],
+ [sg.Button('Nivel facil' , size=(15,2) , tooltip='los 10 mejores puntajes del nivel facil', auto_size_button=False,),sg.Button('Nivel medio' , size=(15,2) , tooltip='los 10 mejores puntajes del nivel medio', auto_size_button=False,),
+ sg.Button('Nivel dificil' , size=(15,2) , tooltip='los 10 mejores puntajes del nivel medio', auto_size_button=False,),sg.Button('Todos' , size=(15,2) , tooltip='los 10 mejores puntajes en general', auto_size_button=False,)],
+ [sg.Listbox('',size =(100,10),key='listbox',background_color='#9FB8AD'),],
+ [sg.Button('Atras',size=(15,3))],
+
+
 ]
 
 def main():
-    window = sg.Window('', layout_puntajes, text_justification='center',size= (200,250),)
+    window = sg.Window('Puntajes', layout_puntajes, text_justification='center',size= (600,370),font=("Helvetica", 13))
     while True:
+        lista=[]
         event, value = window.read()
-        if event is None:
+        if event is None or event == 'Atras':
             break
         if event == 'Nivel facil':
-            obtener_listado('archivopuntajes','Nivel facil')
+            del lista[:]
+            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelFacil'),lista)
+            window.FindElement('listbox').Update(lista);
         if event == 'Nivel medio':
-            obtener_listado('archivopuntajes','Nivel medio')
+            del lista[:]
+            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelMedio'),lista)
+            window.FindElement('listbox').Update(lista);
         if event == 'Nivel dificil':
-            obtener_listado('archivopuntajes','Nivel dificil')
+            del lista[:]
+            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelDificil'),lista)
+            window.FindElement('listbox').Update(lista);
+        if event == 'Todos':
+            del lista[:]
+            mostrarValoresTotal('archivoPuntajes.json',lista)
+            window.FindElement('listbox').Update(lista);
     window.close()
 
 if __name__ == '__main__':

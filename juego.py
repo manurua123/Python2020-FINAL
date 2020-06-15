@@ -15,18 +15,11 @@ sg.SetOptions(background_color='#222831',
        button_color=('#222831','#00adb5'),
        text_justification='center',
        border_width=1,
-
        )
 #valores para testear
-listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':10,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':0,'i':6,'j':0,'k':0,'l':4,'m':3,'n':5,'o':8,'p':0,'q':0,'r':0,'s':7,'t':4,'u':6,'v':0,'w':0,'x':0,'y':0,'z':0},'TipoPalabra':['/NM','/VB','/JJ'],'Tiempo': 60}
-def repartirFichas(bolsa_letras):
-    'reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'
-    for i in range(7):
-        if(AtrilLetras[i].getLetra() == ' '):
-            letra = random.choice(string.ascii_letters).lower()
-            while(bolsa_letras[letra] == 0):
-                letra = random.choice(string.ascii_letters).lower()
-            AtrilLetras[i].setLetra(letra)
+listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':10,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':0,'i':6,'j':0,'k':0,'l':4,'m':3,'n':5,'o':8,'p':0,'q':0,'r':0,'s':7,'t':4,'u':6,'v':0,'w':0,'x':0,'y':0,'z':0},'TipoPalabra':['/NM','/VB','/JJ','/PRP','/DT','/IN'],'Tiempo': 60,'TipoTablero':1}
+
+
 class BotonLetra():
     def __init__ (self,x,y=0):
         self.valor= ' '
@@ -35,10 +28,10 @@ class BotonLetra():
         self.estado = 0    #0 si esta libre o 1 si esta ocupado
         self.bloqueo = True  #bloquea el boton para evitar bugs
         self.key = (x,y)
-        self.boton  = sg.Button(self.valor,size= (4,2),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'))
+        self.boton  = sg.Button(self.valor,size= (4,2),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'),)
         self.tipo = 0
     def update(self):
-        self.boton .update(self.valor,disabled=self.bloqueo)
+        self.boton.update(self.valor,disabled=self.bloqueo)
     def getLetra(self):
         return self.valor
     def setLetra(self,v):
@@ -85,7 +78,28 @@ class BotonTablero(BotonLetra):
             self.boton.update(self.valor,button_color=('black','#e84545')) #rojo
         else:
             None
+class BotonesAtrilPC():
+    def __init__ (self,x):
+        self.valor= ' '
+        self.x = x
+        self.estado = 0    #0 si esta libre o 1 si esta ocupado
+        self.bloqueo = True  #bloquea el boton para evitar bugs
+        self.key = (x,0)
+        self.boton  = sg.Button(' ',size= (4,2),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'))
+        self.tipo = 0
+    def getLetra(self):
+        return self.valor
+    def setLetra(self,v):
+        self.valor = v
+        self.estado = 1
+    def getEstado(self):
+        return self.estado
 
+AtrilLetrasPC = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
+def botonesAtrilPC(x):
+    'genera un boton en la cordenada x'
+    AtrilLetrasPC[x] =  BotonesAtrilPC(x)
+    return AtrilLetrasPC[x].boton
 AtrilLetras = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
 def botonesAtril(x):
     'genera un boton en la cordenada x'
@@ -96,18 +110,7 @@ def botonTablero(x,y):
     'genera un boton en las cordenadas (x,y)'
     TableroLetras[x][y] = BotonTablero(x,y)
     return TableroLetras[x][y].boton
-def asignarPuntajesTablero():
-    'asigna un tipo especifico a cada boton del tablero'
-    for i in range(15):
-        for j in range(15):
-            if(i+j==14)|(i==j):
-                TableroLetras[i][j].tipoCelda(2)
-            if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
-                TableroLetras[i][j].tipoCelda(1)
-            if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
-                TableroLetras[i][j].tipoCelda(3)
-            if(i==7)&(j==7):
-                TableroLetras[i][j].tipoCelda(0)
+
 def bloquearTablero():
     'bloque los botones del tablero de juego'
     for x in range(15):
@@ -138,8 +141,51 @@ def desbloquearJuego(window):
     window['Pasar'].update(disabled=False)
     window['Confirmar'].update(disabled=False)
     window['Cambiar'].update(disabled=False)
-
-
+#inicil de la partida
+def asignarPuntajesTablero(listaConfiguracion):
+    'asigna un tipo especifico a cada boton del tablero'
+    if (listaConfiguracion['TipoTablero']==1):
+        for i in range(15):
+            for j in range(15):
+                if(i+j==14)|(i==j):
+                    TableroLetras[i][j].tipoCelda(2)
+                if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
+                    TableroLetras[i][j].tipoCelda(1)
+                if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
+                    TableroLetras[i][j].tipoCelda(3)
+                if(i==7)&(j==7):
+                    TableroLetras[i][j].tipoCelda(0)
+    elif(listaConfiguracion['TipoTablero']==2):
+        for i in range(15):
+            for j in range(15):
+                if(i+j==14)|(i==j):
+                    TableroLetras[i][j].tipoCelda(3)
+                if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
+                    TableroLetras[i][j].tipoCelda(2)
+                if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
+                    TableroLetras[i][j].tipoCelda(1)
+                if(i==7)&(j==7):
+                    TableroLetras[i][j].tipoCelda(0)
+    elif(listaConfiguracion['TipoTablero']==3):
+        for i in range(15):
+            for j in range(15):
+                if(i+j==14)|(i==j):
+                    TableroLetras[i][j].tipoCelda(1)
+                if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
+                    TableroLetras[i][j].tipoCelda(3)
+                if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
+                    TableroLetras[i][j].tipoCelda(2)
+                if(i==7)&(j==7):
+                    TableroLetras[i][j].tipoCelda(0)
+#turno del jugador
+def repartirFichas(bolsa_letras):
+    'reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'
+    for i in range(7):
+        if(AtrilLetras[i].getLetra() == ' '):
+            letra = random.choice(string.ascii_letters).lower()
+            while(bolsa_letras[letra] == 0):
+                letra = random.choice(string.ascii_letters).lower()
+            AtrilLetras[i].setLetra(letra)
 def formarPalabra(listaLetras):
     '''
     recibe la lista de las posciones donde se colocaron las letrasPuntos
@@ -186,6 +232,50 @@ def sumarPuntos(palabra,listaPorDefecto):
     print('puntos de la pabra {}: {}'.format(palabra,suma))
     return suma
 
+#turno de la PC
+def repartirFichasPC(bolsa_letras):
+    'reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'
+    for i in range(7):
+        if(AtrilLetrasPC[i].getLetra() == ' '):
+            letra = random.choice(string.ascii_letters).lower()
+            while(bolsa_letras[letra] == 0):
+                letra = random.choice(string.ascii_letters).lower()
+            AtrilLetrasPC[i].setLetra(letra)
+def palabrasEnJuego():
+    '''
+    arma una lista con las palabras de mas de dos letras y menos de 7 que proporciona pattern.es
+    '''
+    palabras = list(pattern.es.spelling.keys())
+    palabrasOK= []
+    for i in palabras:
+        if(len(i)<7)&(len(i)>2):
+             palabrasOK.append(i)
+    return palabrasOK
+
+def generaPalabra(tipoPalabra,AtrilLetrasPC,palabras_validas):
+    '''
+    genera una palabra al azar dentro del diccionario de palabras que generamos (2<caracteres<7), crea una lista con las letras que la forman,
+    tranforma esa esa lista en un conjunto y toma los elementos que comparte este conjunto con las letras de la mano, si todos las letras de la palbra random estan
+    en la mano y la palabra es del tipo indicado devuelve la palabra encontrada
+    '''
+    mano = []
+    for i in range(7):
+        mano.append(AtrilLetrasPC[i].getLetra())
+    palabra = ''
+    letras = set(mano)
+    aux = False
+    while not aux:
+        dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
+        if(dato in tipoPalabra):
+            aux = True
+        palabraRandom = list(random.choice(palabras_validas))
+        print("".join(palabraRandom)) #eso es para ver que este funcionando
+        res = list(set(palabraRandom) & letras)
+        if (len(res) == len(palabraRandom)):
+            palabra = "".join(palabraRandom)
+    return palabra
+
+
 def ventana_salir():
     'ventana que confirma si se decea salir del juego'
     layout = [
@@ -205,16 +295,20 @@ def ventana_salir():
 
 #Interface grafica
 Atril = [[botonesAtril(x)for x in range(7)]]                                    #creo el atril de 7 botones
+AtrilPC = [[botonesAtrilPC(x)for x in range(7)]]
 Tablero = [[botonTablero(x,y) for x in range(15)] for y in range(15)]           #creo el el trablero de 15x15 botones
 botonesTurno= [
-    [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (10,1)),
-    sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (10,1)),
-    sg.Button('Pasar',tooltip='Pasar turno',disabled=True,size= (10,1))],
+    [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (12,2)),
+    sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (12,2)),
+    sg.Button('Pasar',tooltip='Pasar turno',disabled=True,size= (12,2))],
 ]
-columna1 = [                                                                    #Contiene el tablero de juego y atril con las fichas de la mano
+columna1 = [   #Contiene el tablero de juego y atril con las fichas de la mano
+    [sg.Text('ATRIL Computadora',size=(30,1),font=("Helvetica", 15))],
+    [sg.Column(AtrilPC)],
     [sg.Column(Tablero)],
-    [sg.Text('ATRIL',size=(30,1),font=("Helvetica", 15))],
+    [sg.Text('ATRIL Jugador',size=(30,1),font=("Helvetica", 15))],
     [sg.Column(Atril), sg.Column(botonesTurno)],
+
 ]
 columnaPuntaje=[
     [sg.Text('PUNTAJE')],
@@ -231,7 +325,8 @@ columna2= [                                                                     
         [sg.Column(columnaTiempo,pad=(10,0))],
         [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (12,2))],
         [sg.Button('Pausar',auto_size_button=False,tooltip='Comenzar Partida',size= (12,2))],
-        [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (12,2))]
+        [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (12,2))],
+        [sg.Button(' ',auto_size_button=False,size= (12,2))]
 ]
 
 layout  = [
@@ -239,7 +334,7 @@ layout  = [
     [sg.Column(columna1),sg.Column(columna2)],
 
 ]
-cordAtril = ['(0, 0)0','(1, 0)1','(2, 0)2','(3, 0)3','(4, 0)4','(5, 0)5','(6, 0)6'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
+cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
 #Programa
 
 def main(listaConfiguracion=listaPorDefecto):
@@ -249,6 +344,7 @@ def main(listaConfiguracion=listaPorDefecto):
     cont_turno = 0
     listaPoiciones = [] #lista de las letras q se van a poner en el tablero
     turno = True
+    palabras_validas = palabrasEnJuego()
     while True:
         while turno:
             event , values = window.read()
@@ -263,7 +359,8 @@ def main(listaConfiguracion=listaPorDefecto):
                 window['Cambiar'].update(disabled=False)
                 desbloquearAtril()
                 repartirFichas(listaConfiguracion['CantidadLetras'])
-                asignarPuntajesTablero()
+                repartirFichasPC(listaConfiguracion['CantidadLetras'])
+                asignarPuntajesTablero(listaConfiguracion)
             if event in ['Confirmar','Cambiar','Pasar','Comenzar','Pausar']:
                 if (event is 'Confirmar') &(len(listaPoiciones)>0): #si se preciona el boton confirmar y se pusieron fichas en el tablero
                     if (confirmarPalabra(formarPalabra(listaPoiciones))):
@@ -282,6 +379,7 @@ def main(listaConfiguracion=listaPorDefecto):
                 letraAtril = cord
                 letra = AtrilLetras[int(letraAtril[1])].getLetra()
                 desbloquerTablero()
+
             else: #se precion algun boton en el tablero
                 cord = event
                 #reviso si el tablero esta vacion en esa posicion
@@ -289,16 +387,17 @@ def main(listaConfiguracion=listaPorDefecto):
                     TableroLetras[cord[0]][cord[1]].setLetra(letra) #asigno la letra a la posicion
                     AtrilLetras[int(letraAtril[1])].vaciar()  #elimino esa ficha del atril
                     listaPoiciones.append(cord)
-                bloquearTablero()
+                bloquearTablero()   #TURNO JUGADOR
 
-
-        if not turno: #termina el turno
+        if not turno: #TURNO DE LA PC
             bloquearJuego(window)
             cont_turno +=1;
-            print('turno numero:',cont_turno)
 
+            mano = []
+            palabra = generaPalabra(listaConfiguracion['TipoPalabra'],AtrilLetrasPC,palabras_validas)
+            print('turno numero:',cont_turno)
+            print('se encontro la plabra',palabra)
             repartirFichas(listaConfiguracion['CantidadLetras'])
-            print('aca va el turno de la maquina')
             turno = True
             desbloquearJuego(window)
 

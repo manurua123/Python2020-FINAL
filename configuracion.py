@@ -15,15 +15,15 @@ def nivel_facil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *3
         letrasCantidad[i] = letrasCantidad[i]*3
-    tipoPalabra = ['/NM','/VB','/JJ']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabre':tipoPalabra}
+    tipoPalabra = ['/NM','/VB','/JJ','/PRP','/DT','/IN']
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1}
 
 def nivel_medio(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *2
         letrasCantidad[i] = letrasCantidad[i]*2
     tipoPalabra = ['/VB','/JJ']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabre':tipoPalabra}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2}
 
 def nivel_dificil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
@@ -31,7 +31,7 @@ def nivel_dificil(letrasPuntos,letrasCantidad):
         letrasCantidad[i] = letrasCantidad[i]
     tipos= ['/VB','/JJ']
     tipoPalabra=list(random.choice(tipos))
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabre':tipoPalabra}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3}
 
 layout = [
     [sg.Text('Duracion del turno'), sg.Slider(background_color='#222831',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempo',tooltip='Duracion de cad turno. 60seg por defecto')],
@@ -71,7 +71,6 @@ def main():
         if event == 'Confirmar':
             listaConfiguracion['Tiempo'] = value['tiempo']
             break
-    print(listaConfiguracion)
     window.close()
     return listaConfiguracion
 
