@@ -33,17 +33,18 @@ def nivel_dificil(letrasPuntos,letrasCantidad):
     tipoPalabra=list(random.choice(tipos))
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3}
 
-layout = [
-    [sg.Text('Duracion del turno'), sg.Slider(background_color='#222831',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempo',tooltip='Duracion de cad turno. 60seg por defecto')],
-    [sg.Text('Nivel de dificultad'),
-    sg.Button('Facil',tooltip='Fichas: Muchas\nPuntos: Muchos\nCategorias: TODAS',size= (8,1),pad=(2,4)),
-    sg.Button('Medio',tooltip='Fichas: Algunas\nPuntos: Normal\nCategorias: Verbos | Adjetivos ',size= (8,1),pad=(2,4)),
-    sg.Button('Dificil',tooltip='Fichas: Pocas\nPuntos: Pocos\nCategorias:Verbos | Adjetivos',size= (8,1),pad=(2,4))],
-    [sg.Button('Confirmar',disabled=True,size= (200,1),pad=(1,4))],
-    [sg.Button('Cancelar',size= (200,1),pad=(1,4))],
-]
+
 def main():
-    window = sg.Window('Configuracion', layout, text_justification='center',size= (400,180),font=("Helvetica", 13))
+    layout = [
+        [sg.Text('Duracion del turno'), sg.Slider(background_color='#222831',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempo',tooltip='Duracion de cad turno. 60seg por defecto')],
+        [sg.Text('Nivel de dificultad',),
+        sg.Button('Facil',tooltip='Fichas: Muchas\nPuntos: Muchos\nCategorias: TODAS',size= (8,2),pad=(3,4),),
+        sg.Button('Medio',tooltip='Fichas: Algunas\nPuntos: Normal\nCategorias: Verbos | Adjetivos ',size= (8,2),pad=(3,4)),
+        sg.Button('Dificil',tooltip='Fichas: Pocas\nPuntos: Pocos\nCategorias:Verbos | Adjetivos',size= (8,2),pad=(3,4))],
+        [sg.Button('Confirmar',disabled=True,size= (200,2),pad=(1,4))],
+        [sg.Button('Cancelar',size= (200,2),pad=(1,4))],
+    ]
+    window = sg.Window('Configuracion', layout, text_justification='center',size= (420,220),font=("Helvetica", 13))
     while True:
         event, value = window.read()
         if event is None or event == 'Cancelar':
