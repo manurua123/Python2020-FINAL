@@ -8,6 +8,8 @@ import sys
 import unicodedata
 from datetime import datetime, date, time, timedelta
 import json
+from itertools import permutations
+import generarPalabra
 
 
 #configurtacion de colores
@@ -125,7 +127,6 @@ def botonTablero(x,y):
     'genera un boton en las cordenadas (x,y)'
     TableroLetras[x][y] = BotonTablero(x,y)
     return TableroLetras[x][y].boton
-
 def bloquearTablero():
     'bloque los botones del tablero de juego'
     for x in range(15):
@@ -211,7 +212,7 @@ def sumarPuntos(Lpalabra,valorLetras):
     '''
     suma = 0
     aux = 1
-    print(Lpalabra)
+
     for i in Lpalabra:
         letra = TableroLetras[i[0]][i[1]].getLetra()
         tipo =  TableroLetras[i[0]][i[1]].getTipo()
@@ -301,41 +302,14 @@ def borrarPalabras(listaLetras):
                 ok= False
             x = x + 1
 #turno de la PC
-def palabrasEnJuego():
-    '''
-    arma una lista con las palabras de mas de dos letras y menos de 7 que proporciona pattern.es
-    '''
-    palabras = list(pattern.es.spelling.keys())
-    palabrasOK= []
-    for i in palabras:
-        if(i in pattern.es.lexicon):
-            if(len(i)<7)&(len(i)>2):
-                #s = ''.join((c for c in unicodedata.normalize('NFD',i) if unicodedata.category(c) != 'Mn')) #elimina los acentos
-                 palabrasOK.append(i)
-    return palabrasOK
-def generaPalabra(tipoPalabra,AtrilLetrasPC,palabras_validas):
-    '''
-    genera una palabra al azar dentro del diccionario de palabras que generamos (2<caracteres<7), crea una lista con las letras que la forman,
-    tranforma esa esa lista en un conjunto y toma los elementos que comparte este conjunto con las letras de la mano, si todos las letras de la palbra random estan
-    en la mano y la palabra es del tipo indicado devuelve la palabra encontrada
-    '''
+def crearPalabra(Atril,listaConfiguracion):
     mano = []
-    for i in range(7):
-        mano.append(AtrilLetrasPC[i].getLetra())
     palabra = ''
-    letras = set(mano)
-    aux = False
-    while not aux:
-
-        palabraRandom = list(random.choice(palabras_validas))
-        print("".join(palabraRandom)) #eso es para ver que este funcionando
-        res = list(set(palabraRandom) & letras)
-        if (len(res) == len(palabraRandom)):
-            palabra = "".join(palabraRandom)
-        dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
-        if(dato in tipoPalabra):
-            aux = True
-    return palabra
+    for i in range(7):
+        mano.append(Atril[i].getLetra())
+    palabra = generarPalabra.main(mano,listaConfiguracion['TipoPalabra'])
+    if(palabra != None):
+        return palabra
 def intentoColocarPalabra(palabra):
     x = random.randrange(14)
     if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
@@ -443,7 +417,6 @@ def main(listaConfiguracion=listaPorDefecto):
     cont_turno = 1
     listaPoiciones = [] #lista de las letras q se van a poner en el tablero
     turno = True
-    palabras_validas = palabrasEnJuego()
     counter = 0
 
     while True:
@@ -499,13 +472,16 @@ def main(listaConfiguracion=listaPorDefecto):
         #TURNO DE LA PC
         if not turno:
             bloquearJuego(window)
-            mano = []
+
             lPalabra =[]
-            palabra = generaPalabra(listaConfiguracion['TipoPalabra'],AtrilLetrasPC,palabras_validas)
-            print('se encontro la plabra',palabra)
-            puntosPC =puntosPC + sumarPuntos(colocaPalabra(palabra),listaConfiguracion['PuntajeLetra'])
-            window['contadorPuntosPC'].update(puntosPC)
-            elimiarLetrasAtril(palabra,AtrilLetrasPC)
+            palabra = crearPalabra(AtrilLetrasPC,listaConfiguracion)
+            if (palabra !=None):
+                print('se encontro la plabra',palabra)
+                puntosPC =puntosPC + sumarPuntos(colocaPalabra(palabra),listaConfiguracion['PuntajeLetra'])
+                window['contadorPuntosPC'].update(puntosPC)
+                elimiarLetrasAtril(palabra,AtrilLetrasPC)
+
+
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
             turno = True

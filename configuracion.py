@@ -17,7 +17,7 @@ def nivel_facil(letrasPuntos,letrasCantidad):
         letrasCantidad[i] = letrasCantidad[i]*3
     tipoPalabra = ['/NN','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'nivelFacil'}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'facil'}
 
 
 def nivel_medio(letrasPuntos,letrasCantidad):
@@ -26,7 +26,7 @@ def nivel_medio(letrasPuntos,letrasCantidad):
         letrasCantidad[i] = letrasCantidad[i]*2
     tipoPalabra = ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2,'Nivel': 'nivelMedio'}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2,'Nivel': 'medio'}
 
 
 def nivel_dificil(letrasPuntos,letrasCantidad):
@@ -36,7 +36,7 @@ def nivel_dificil(letrasPuntos,letrasCantidad):
     tipos= ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS']
     tipoPalabra=list(random.choice(tipos))
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3,'Nivel': 'nivelDificil'}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3,'Nivel': 'dificil'}
 
 
 def main():
