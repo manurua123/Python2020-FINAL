@@ -385,63 +385,66 @@ def elimiarLetrasAtril(palabra,atril):
              aux = aux +1
          atril[aux].vaciar()
 
-#Interface grafica
-Atril = [botonesAtril(x,AtrilLetras)for x in range(7)]  #creo el atril de 7 botones
-AtrilPC = [botonesAtrilPC(x)for x in range(7)] #creo el atril de 7 botones para la PC
-Tablero = [[botonTablero(x,y) for x in range(15)] for y in range(15)] #creo el el trablero de 15x15 botones
-botonesTurno= [
+
+
+def main(listaConfiguracion=listaPorDefecto):
+
+    #Interface grafica
+    Atril = [botonesAtril(x,AtrilLetras)for x in range(7)]  #creo el atril de 7 botones
+    AtrilPC = [botonesAtrilPC(x)for x in range(7)] #creo el atril de 7 botones para la PC
+    Tablero = [[botonTablero(x,y) for x in range(15)] for y in range(15)] #creo el el trablero de 15x15 botones
+    botonesTurno= [
     [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (12,2)),
     sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (12,2)),
     sg.Button('Pasar',tooltip='Pasar turno',disabled=True,size= (12,2))],
-]
-#Contiene el tablero de juego y atril con las fichas de la mano
-columna1 = [
+    ]
+    #Contiene el tablero de juego y atril con las fichas de la mano
+    columna1 = [
     [sg.Text('ATRIL Computadora',size=(30,1),font=("Helvetica", 15))],
     [sg.Column([AtrilPC])],
     [sg.Column(Tablero)],
     [sg.Text('ATRIL Jugador',size=(30,1),font=("Helvetica", 15))],
     [sg.Column([Atril]), sg.Column(botonesTurno)],
     ]
-columnaPuntajePJ=[
-[sg.Text('Jugador', size=(10,1))],
-[sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
-]
-columnaPuntajePC=[
-[sg.Text('Computadora', size=(10,1))],
-[sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
-]
-columnaPuntaje=[
+    columnaPuntajePJ=[
+    [sg.Text('Jugador', size=(10,1))],
+    [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
+    ]
+    columnaPuntajePC=[
+    [sg.Text('Computadora', size=(10,1))],
+    [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
+    ]
+    columnaPuntaje=[
     [sg.Column(columnaPuntajePJ),sg.Column(columnaPuntajePC)]
     ,
 
-]
-columnaTiempo=[
+    ]
+    columnaTiempo=[
     [sg.Text('Tiempo Partida ',size=(15,1)),sg.Text(key='timerPartida',size=(7,1)),],
     [sg.Text('TURNO',size=(10,1))],
     [sg.Text('---',key='contTurno')],
     [sg.Text('Tiempo Turno',size=(15,1)),sg.Text(key='timerTurno',size=(7,1)),],
 
-]
-#contiene los puntajes y el tiempo que resta del turno
-columna2= [
-        [sg.Column(columnaPuntaje,)],
-        [sg.Column(columnaTiempo,)],
-        [sg.Text('MULTIPLICADORES',size=(20,1))],
-        [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#4f98ca')),sg.Text('Duplica el valor de la letra',)], #duplica Letra
-        [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#21bf73')),sg.Text('Duplica el valor de la palabra',)], #duplica palabra
-        [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#fd5e53')),sg.Text('Resta el valor de la letra',)], #resta letra
-        [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
-        [sg.Button('Pausar',auto_size_button=False,tooltip='Falta Implementar',size= (20,2),disabled = True)],
-        [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (20,2))],
+    ]
+    #contiene los puntajes y el tiempo que resta del turno
+    columna2= [
+    [sg.Column(columnaPuntaje,)],
+    [sg.Column(columnaTiempo,)],
+    [sg.Text('MULTIPLICADORES',size=(20,1))],
+    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#4f98ca')),sg.Text('Duplica el valor de la letra',)], #duplica Letra
+    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#21bf73')),sg.Text('Duplica el valor de la palabra',)], #duplica palabra
+    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#fd5e53')),sg.Text('Resta el valor de la letra',)], #resta letra
+    [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
+    [sg.Button('Pausar',auto_size_button=False,tooltip='Falta Implementar',size= (20,2),disabled = True)],
+    [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (20,2))],
 
 
-]
+    ]
 
-cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
-cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
-#Programa
+    cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
+    cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
+    #Programa
 
-def main(listaConfiguracion=listaPorDefecto):
     layout  = [
         [sg.Text('SCREBLE_AR',font=("Helvetica", 20,'bold'),size=(50,1))],
         [sg.Column(columna1),sg.Column(columna2)],
