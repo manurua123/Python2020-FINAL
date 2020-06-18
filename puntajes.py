@@ -29,11 +29,11 @@ def mostrarValoresTotal(ruta,lista):
         dato = json.load(file)
         file.close()
     listaAux = []
-    for i in dato['nivelFacil']:
+    for i in dato['facil']:
         listaAux.append(i)
-    for i in dato['nivelMedio']:
+    for i in dato['medio']:
         listaAux.append(i)
-    for i in dato['nivelDificil']:
+    for i in dato['dificil']:
         listaAux.append(i)
     newlist = sorted(listaAux, key=itemgetter('puntaje'), reverse=True)
     aux = 0
@@ -66,15 +66,15 @@ def main():
             break
         if event == 'Nivel facil':
             del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelFacil'),lista)
+            mostrarValores(abrirArchivo('archivoPuntajes.json','facil'),lista)
             window.FindElement('listbox').Update(lista);
         if event == 'Nivel medio':
             del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelMedio'),lista)
+            mostrarValores(abrirArchivo('archivoPuntajes.json','medio'),lista)
             window.FindElement('listbox').Update(lista);
         if event == 'Nivel dificil':
             del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','nivelDificil'),lista)
+            mostrarValores(abrirArchivo('archivoPuntajes.json','dificil'),lista)
             window.FindElement('listbox').Update(lista);
         if event == 'Todos':
             del lista[:]

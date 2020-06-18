@@ -15,23 +15,28 @@ def nivel_facil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *3
         letrasCantidad[i] = letrasCantidad[i]*3
-    tipoPalabra = ['/NM','/VB','/JJ','/PRP','/DT','/IN']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1}
+    tipoPalabra = ['/NN','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+                 '/VSI', '/VSN', '/VSP', '/VSS']
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'nivelFacil'}
+
 
 def nivel_medio(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *2
         letrasCantidad[i] = letrasCantidad[i]*2
-    tipoPalabra = ['/VB','/JJ']
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2}
+    tipoPalabra = ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+                 '/VSI', '/VSN', '/VSP', '/VSS']
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2,'Nivel': 'nivelMedio'}
+
 
 def nivel_dificil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i]
         letrasCantidad[i] = letrasCantidad[i]
-    tipos= ['/VB','/JJ']
+    tipos= ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+                 '/VSI', '/VSN', '/VSP', '/VSS']
     tipoPalabra=list(random.choice(tipos))
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3}
+    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3,'Nivel': 'nivelDificil'}
 
 
 def main():
@@ -44,7 +49,7 @@ def main():
         [sg.Button('Confirmar',disabled=True,size= (200,2),pad=(1,4))],
         [sg.Button('Cancelar',size= (200,2),pad=(1,4))],
     ]
-    window = sg.Window('Configuracion', layout, text_justification='center',size= (420,220),font=("Helvetica", 13))
+    window = sg.Window('Configuracion', layout, text_justification='center',size= (420,220),font=('Helvetica', 13))
     while True:
         event, value = window.read()
         if event is None or event == 'Cancelar':
