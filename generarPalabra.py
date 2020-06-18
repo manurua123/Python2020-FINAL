@@ -49,10 +49,6 @@ def armo_palabra(letras_palabras):
         palabras.update((map("".join, permutations(letras, i))))
     return (palabras)
 
-#Ejemplo de uso con una lista de letras dada
-
-# clasifico con pattern
-#lista palabras válidas dad una clasificación
 
 
 

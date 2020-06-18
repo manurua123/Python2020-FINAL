@@ -7,7 +7,6 @@ sg.SetOptions(background_color='#222831',
        button_color=('#222831','#00adb5'),
        text_justification='center',
        border_width=1,
-
        )
 
 def abrirArchivo(ruta,nivel):
@@ -15,15 +14,14 @@ def abrirArchivo(ruta,nivel):
         data = json.load(file)
         file.close()
     return(data[nivel])
-
-
 def mostrarValores(datos,lista):
+    del lista[:]
     newlist = sorted(datos, key=itemgetter('puntaje'), reverse=True)
     aux = 0
     for i in newlist:
         if(aux < 10):
             lista.append(i)
-        aux =+1
+        aux = aux 
 def mostrarValoresTotal(ruta,lista):
     with open(ruta) as file:
         dato = json.load(file)

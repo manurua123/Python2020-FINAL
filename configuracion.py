@@ -15,25 +15,23 @@ def nivel_facil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *3
         letrasCantidad[i] = letrasCantidad[i]*3
-    tipoPalabra = ['/NN','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
-                 '/VSI', '/VSN', '/VSP', '/VSS']
+    tipoPalabra = ['/VB','/NN','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+                 '/VSI', '/VSN', '/VSP', '/VSS','/PRP','/JJ']
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'facil'}
-
 
 def nivel_medio(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i] *2
         letrasCantidad[i] = letrasCantidad[i]*2
-    tipoPalabra = ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+    tipoPalabra = ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS']
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2,'Nivel': 'medio'}
-
 
 def nivel_dificil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
         letrasPuntos[i] = letrasPuntos[i]
         letrasCantidad[i] = letrasCantidad[i]
-    tipos= ['/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
+    tipos= ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS']
     tipoPalabra=list(random.choice(tipos))
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3,'Nivel': 'dificil'}
@@ -41,7 +39,8 @@ def nivel_dificil(letrasPuntos,letrasCantidad):
 
 def main():
     layout = [
-        [sg.Text('Duracion del turno'), sg.Slider(background_color='#222831',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempo',tooltip='Duracion de cad turno. 60seg por defecto')],
+        [sg.Text('Duracion del TURNO',size = (25,1)), sg.Slider(background_color='#222831',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempoTurno',tooltip='Duracion del turno en segundos')],
+        [sg.Text('Duracion de la PARTIDA',size = (25,1)), sg.Slider(background_color='#222831',range = (5, 15),orientation = 'h', size = (20,20), default_value = 10, key = 'tiempoPartida',tooltip='Duracion total de la partida en minutos')],
         [sg.Text('Nivel de dificultad',),
         sg.Button('Facil',tooltip='Fichas: Muchas\nPuntos: Muchos\nCategorias: TODAS',size= (8,2),pad=(3,4),),
         sg.Button('Medio',tooltip='Fichas: Algunas\nPuntos: Normal\nCategorias: Verbos | Adjetivos ',size= (8,2),pad=(3,4)),
@@ -49,12 +48,13 @@ def main():
         [sg.Button('Confirmar',disabled=True,size= (200,2),pad=(1,4))],
         [sg.Button('Cancelar',size= (200,2),pad=(1,4))],
     ]
-    window = sg.Window('Configuracion', layout, text_justification='center',size= (420,220),font=('Helvetica', 13))
+    window = sg.Window('Configuracion', layout, text_justification='center',size= (420,280),font=('Helvetica', 13))
     while True:
         event, value = window.read()
         if event is None or event == 'Cancelar':
             listaConfiguracion = nivel_medio(letras_puntos,letras_cantidad)
-            listaConfiguracion['Tiempo'] = 60
+            listaConfiguracion['TiempoTurno'] = 60
+            listaConfiguracion['TiempoPartida'] =10
             break
         if event == 'Facil':
             listaConfiguracion = nivel_facil(letras_puntos,letras_cantidad)
@@ -75,7 +75,8 @@ def main():
             window['Dificil'].update(disabled=True)
             window['Confirmar'].update(disabled=False)
         if event == 'Confirmar':
-            listaConfiguracion['Tiempo'] = value['tiempo']
+            listaConfiguracion['TiempoTurno'] = value['tiempoTurno']
+            listaConfiguracion['TiempoPartida'] = value['tiempoPartida']
             break
     window.close()
     return listaConfiguracion
