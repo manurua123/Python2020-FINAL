@@ -15,12 +15,12 @@ El trabajo se debia realizar en grupo de 2 o 3 integrantes y siguiendo una serie
   * [Pattern](https://github.com/clips/pattern/) - _Procesamiento del lenguaje natural_
 ### Sistema Operativo :computer:   
   Todas las pruebas se realizaron en [Windows 10 version 1909](https://support.microsoft.com/es-ar/help/4517245/feature-update-via-windows-10-version-1909-enablement-package)
-## Ejecucion 🚀
-  1. Descomprima el contenido del repositorio
+## ¿Como jugar? 🚀
+  1. Descomprimir el contenido del repositorio
   
-  2. Ejecute ScrabbleAR.py
+  2. Ejecutar ScrabbleAR.py
   
-  3. Juegue 
+  3. Juegar
   
 ## Autores ✒️ 
   * [Manuel Rua](https://github.com/manurua123)
