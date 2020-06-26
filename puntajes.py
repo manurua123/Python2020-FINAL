@@ -24,13 +24,14 @@ def abrirArchivo(ruta,nivel):
         file.close()
     return(data[nivel])
 def mostrarValores(datos,lista):
+    '''muesta los primeros 10 valores de un lisa de valores'''
     del lista[:]
     newlist = sorted(datos, key=itemgetter('puntaje'), reverse=True)
     aux = 0
     for i in newlist:
         if(aux < 10):
             lista.append(i)
-        aux = aux
+        aux = aux+1
 def mostrarValoresTotal(ruta,lista):
     with open(ruta) as file:
         dato = json.load(file)

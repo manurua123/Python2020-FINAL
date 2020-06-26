@@ -124,46 +124,48 @@ class BotonesAtrilPC():
 #Atril del la maquina, del jugador y el tablero de juego
 AtrilLetrasPC = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
 def botonesAtrilPC(x):
-    'genera un boton en la cordenada x'
+    '''genera un boton en la cordenada x'''
     AtrilLetrasPC[x] =  BotonesAtrilPC(x)
     return AtrilLetrasPC[x].boton
 AtrilLetras = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
 def botonesAtril(x,atril):
-    'genera un boton en la pocicion x del atril'
+    '''genera un boton en la pocicion x del atril'''
     atril[x] = BotonAtril(x)
     return atril[x].boton
 TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]               #creo una matriz de 15x15 vacia
 def botonTablero(x,y):
-    'genera un boton en las cordenadas (x,y)'
+    '''genera un boton en las cordenadas (x,y)'''
     TableroLetras[x][y] = BotonTablero(x,y)
     return TableroLetras[x][y].boton
 
 #bloqueo tablero, atril o el juego para evitar bugs
 def bloquearTablero():
-    'bloque los botones del tablero de juego'
+    '''bloque los botones del tablero de juego'''
     for x in range(15):
         for y in range(15):
             TableroLetras[x][y].bloquear()
 def desbloquerTablero():
-    'desbloque los botones del tablero de juego'
+    '''desbloque los botones del tablero de juego'''
     for x in range(15):
         for y in range(15):
             TableroLetras[x][y].desbloquear()
 def bloquearAtril():
-    'bloque los botones del atril'
+    '''bloque los botones del atril del jugador'''
     for x in range(7):
         AtrilLetras[x].bloquear()
 def desbloquearAtril():
-    'desbloquea los botones del atril'
+    '''desbloquea los botones del atril del jugador'''
     for x in range(7):
         AtrilLetras[x].desbloquear()
 def bloquearJuego(window):
+    '''bloque TODOS los botones de la pantalla'''
     bloquearAtril()
     bloquearTablero()
     window['Pasar'].update(disabled=True)
     window['Confirmar'].update(disabled=True)
     window['Cambiar'].update(disabled=True)
 def desbloquearJuego(window):
+    '''desbloquea TODOS los botones de la pantalla'''
     desbloquearAtril()
     desbloquerTablero()
     window['Pasar'].update(disabled=False)
@@ -172,7 +174,7 @@ def desbloquearJuego(window):
 
 #inicil de la partida
 def asignarPuntajesTablero(listaConfiguracion):
-    'asigna un tipo especifico a cada boton del tablero'
+    '''asigna un tipo especifico a cada boton del tablero'''
     if (listaConfiguracion['TipoTablero']==1):
         for i in range(15):
             for j in range(15):
@@ -207,7 +209,7 @@ def asignarPuntajesTablero(listaConfiguracion):
                 if(i==7)&(j==7):
                     TableroLetras[i][j].tipoCelda(0)
 def repartirFichas(bolsa_letras,atril):
-    'reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'
+    '''reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'''
     for i in range(7):
         if(atril[i].getLetra() == ' '):
             letra = random.choice(string.ascii_letters).lower()
@@ -240,7 +242,7 @@ def sumarPuntos(Lpalabra,valorLetras):
             suma = suma - valorLetras[letra]
     return (suma * aux)
 def ventana_salir(ventana):
-    'bloquea el juego y depues confirma si el juegador quiere salir'
+    '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
         [sg.Text('¿Seguro que desea salir?')],
@@ -260,6 +262,7 @@ def ventana_salir(ventana):
 
 #fin de la Partida
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
+    '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
     with open(ruta,'r+') as file:
         json_data = json.load(file)
         fecha = datetime.now()  # Obtiene fecha y hora actual
@@ -303,7 +306,7 @@ def confirmarPalabra(Lpalabra,tipoPalabra):
     else:
         return False
 def borrarPalabras(listaLetras):
-    'devuelvo las letras usasas al atril y borro todas las letras que se pusieron en el tablero'
+    '''devuelvo las letras usasas al atril y borro todas las letras que se pusieron en el tablero'''
     x = 0
     for i in listaLetras:
         letra = TableroLetras[i[0]][i[1]].getLetra()
@@ -315,7 +318,7 @@ def borrarPalabras(listaLetras):
                 ok= False
             x = x + 1
 def cambioMano(atrilPJ):
-
+    '''Cambia la mano del jugador'''
     AtrilCambiar = [0 for x in range(7)] #atril de 7 elementos
     Atril = [botonesAtril(x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
 
@@ -336,6 +339,7 @@ def cambioMano(atrilPJ):
 
 #turno de la PC
 def crearPalabra(Atril,listaConfiguracion):
+    '''crea una palabra con las letras que se pusieron en el tablero'''
     mano = []
     palabra = ''
     for i in range(7):
@@ -344,6 +348,7 @@ def crearPalabra(Atril,listaConfiguracion):
     if(palabra != None):
         return palabra
 def intentoColocarPalabra(palabra):
+    '''la pc intenta colocar la palabra que formo en una ubicacion random dentro del tablero'''
     x = random.randrange(14)
     if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
         x=x-len(palabra)
@@ -365,6 +370,7 @@ def intentoColocarPalabra(palabra):
 
         return (False,None)
 def colocaPalabra(palabra):
+    '''la pc coloca la palabra en una ubicacion random permitida dentro del tablero'''
     aux = intentoColocarPalabra(palabra)
     while( aux[0] == False):
         aux = intentoColocarPalabra(palabra)
