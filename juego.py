@@ -28,7 +28,7 @@ sg.SetOptions(background_color='#222831',
 listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},
 'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':0,'i':6,'j':2,'k':0,'l':4,'m':3,'n':5,'o':8,'p':2,'q':0,'r':4,'s':5,'t':4,'u':6,'v':0,'w':0,'x':0,'y':0,'z':0},
 'TipoPalabra':['/WP','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG', '/VSI', '/VSN', '/VSP', '/VSS'],
-'TiempoTurno': 5,
+'TiempoTurno': 30,
 'TiempoPartida':10,
 'TipoTablero':1,
 'Nivel': 'medio'}
@@ -238,10 +238,10 @@ def sumarPuntos(Lpalabra,valorLetras):
             suma = suma + valorLetras[letra]*2
         elif(tipo == 3):
             suma = suma - valorLetras[letra]
-    print('puntos de la pabra : {}'.format(suma*aux))
     return (suma * aux)
-def ventana_salir():
-    'ventana que confirma si se decea salir del juego'
+def ventana_salir(ventana):
+    'bloquea el juego y depues confirma si el juegador quiere salir'
+    bloquearJuego(ventana)
     layout = [
         [sg.Text('¿Seguro que desea salir?')],
         [sg.Button('SI',size= (5,1)),sg.Button('NO',size= (5,1))]
@@ -251,9 +251,11 @@ def ventana_salir():
     while  True:
         if event == 'SI':
             window.close()
+            desbloquearJuego(ventana)
             return True
         else:
             window.close()
+            desbloquearJuego(ventana)
             return False
 
 #fin de la Partida
@@ -295,13 +297,10 @@ def confirmarPalabra(Lpalabra,tipoPalabra):
     if(len(palabra)>1):
         dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
         if(dato in tipoPalabra):
-            print('{} es valida, es un {}'.format(palabra,dato))
             return True
         else:
-            print('{} NO es valida, es un {}'.format(palabra,dato))
             return False
     else:
-        print('{} NO es valida, es un muy corta'.format(palabra))
         return False
 def borrarPalabras(listaLetras):
     'devuelvo las letras usasas al atril y borro todas las letras que se pusieron en el tablero'
@@ -434,6 +433,8 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#4f98ca')),sg.Text('Duplica el valor de la letra',)], #duplica Letra
     [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#21bf73')),sg.Text('Duplica el valor de la palabra',)], #duplica palabra
     [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#fd5e53')),sg.Text('Resta el valor de la letra',)], #resta letra
+    [sg.Text('¿Que fue pasando?')],
+    [sg.Listbox('',size =(30,12),key='acciones')],
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
     [sg.Button('Pausar',auto_size_button=False,tooltip='Falta Implementar',size= (20,2),disabled = True)],
     [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (20,2))],
@@ -459,6 +460,7 @@ def main(listaConfiguracion=listaPorDefecto):
     contadorTiempoPartida = 0 #mide el tiempo de la partida
     comenzar = False #camienza el jeugo apretando comenzar
     intentosCambio = 0 #cantidad de cambios que le quedan al jugador
+    listaAcciones = [] #carga las distintas acciones que pasan cada turno
     while True:
 
         event, values = window.read(timeout=10)
@@ -471,7 +473,7 @@ def main(listaConfiguracion=listaPorDefecto):
             contadorTiempoTurno = contadorTiempoTurno +1
             contadorTiempoPartida = contadorTiempoPartida +1
         if event is None or event == 'Salir':
-            if(ventana_salir()):
+            if(ventana_salir(window)):
                 guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
                 break
         #TURNO DEl JUGADOR
@@ -491,13 +493,17 @@ def main(listaConfiguracion=listaPorDefecto):
             #BOTON CONFIRMAR
             if (event is 'Confirmar') &(len(listaPoiciones)>0): #si se preciona el boton confirmar y se pusieron fichas en el tablero
                 if(confirmarPalabra(formarListaPalabra(listaPoiciones),listaConfiguracion['TipoPalabra'])):
-                    puntosPJ =puntosPJ + sumarPuntos(formarListaPalabra(listaPoiciones),listaConfiguracion['PuntajeLetra'])
+                    puntos = sumarPuntos(formarListaPalabra(listaPoiciones),listaConfiguracion['PuntajeLetra'])
+                    puntosPJ =puntosPJ + puntos
                     window['contadorPuntosPJ'].update(puntosPJ)
-                    turno = False
-
+                    listaAcciones.append('CORRECTO \n y sumaste {} puntos'.format(puntos))
+                    window['acciones'].update(listaAcciones[::-1])
                     del listaPoiciones[:]
+                    turno = False
                 else:
                     borrarPalabras(listaPoiciones)
+                    listaAcciones.append('Esa palabra no cuenta')
+                    window['acciones'].update(listaAcciones[::-1])
                     del listaPoiciones[:] #vacio la lista con las letras que se usaron
             #BOTON PASAR
             if (event is 'Pasar')&(len(listaPoiciones)==0) :  #si se preciona el boton confirmar y no se pusieron fichas en el tablero
@@ -544,8 +550,11 @@ def main(listaConfiguracion=listaPorDefecto):
             lPalabra =[]
             palabra = crearPalabra(AtrilLetrasPC,listaConfiguracion)
             if (palabra !=None):
-                print('se encontro la plabra',palabra)
-                puntosPC =puntosPC + sumarPuntos(colocaPalabra(palabra),listaConfiguracion['PuntajeLetra'])
+                puntos = sumarPuntos(colocaPalabra(palabra),listaConfiguracion['PuntajeLetra'])
+                puntosPC =puntosPC + puntos
+                listaAcciones.append('La maquina encontro la plabra {}'.format(palabra))
+                listaAcciones.append('La maquina sumo {} puntos'.format(puntos))
+                window['acciones'].update(listaAcciones[::-1])
                 window['contadorPuntosPC'].update(puntosPC)
                 elimiarLetrasAtril(palabra,AtrilLetrasPC)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)

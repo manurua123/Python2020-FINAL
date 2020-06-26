@@ -8,7 +8,16 @@ sg.SetOptions(background_color='#222831',
        text_justification='center',
        border_width=1,
        )
-
+def ventana_error_archivo():
+    '''
+    indica que el archivo que se busca no existe en la ubicacion seleccionada
+    '''
+    layout = [[sg.Text('Falta el documento que almacena los puntajes maximos',)],
+              [sg.OK(size=(10,2))]
+              ]
+    window = sg.Window('ERROR', layout)
+    event, values = window.read()
+    window.close()
 def abrirArchivo(ruta,nivel):
     with open(ruta) as file:
         data = json.load(file)
@@ -21,7 +30,7 @@ def mostrarValores(datos,lista):
     for i in newlist:
         if(aux < 10):
             lista.append(i)
-        aux = aux 
+        aux = aux
 def mostrarValoresTotal(ruta,lista):
     with open(ruta) as file:
         dato = json.load(file)
@@ -60,24 +69,28 @@ def main():
     while True:
         lista=[]
         event, value = window.read()
-        if event is None or event == 'Atras':
-            break
-        if event == 'Nivel facil':
-            del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','facil'),lista)
-            window.FindElement('listbox').Update(lista);
-        if event == 'Nivel medio':
-            del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','medio'),lista)
-            window.FindElement('listbox').Update(lista);
-        if event == 'Nivel dificil':
-            del lista[:]
-            mostrarValores(abrirArchivo('archivoPuntajes.json','dificil'),lista)
-            window.FindElement('listbox').Update(lista);
-        if event == 'Todos':
-            del lista[:]
-            mostrarValoresTotal('archivoPuntajes.json',lista)
-            window.FindElement('listbox').Update(lista);
+        try:
+            if event is None or event == 'Atras':
+                break
+            if event == 'Nivel facil':
+                del lista[:]
+                mostrarValores(abrirArchivo('archivoPuntajes.json','facil'),lista)
+                window.FindElement('listbox').Update(lista);
+            if event == 'Nivel medio':
+                del lista[:]
+                mostrarValores(abrirArchivo('archivoPuntajes.json','medio'),lista)
+                window.FindElement('listbox').Update(lista);
+            if event == 'Nivel dificil':
+                del lista[:]
+                mostrarValores(abrirArchivo('archivoPuntajes.json','dificil'),lista)
+                window.FindElement('listbox').Update(lista);
+            if event == 'Todos':
+                del lista[:]
+                mostrarValoresTotal('archivoPuntajes.json',lista)
+                window.FindElement('listbox').Update(lista);
+        except FileNotFoundError:
+            ventana_error_archivo()
+
     window.close()
 
 if __name__ == '__main__':
