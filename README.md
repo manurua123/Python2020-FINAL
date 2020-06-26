@@ -16,11 +16,11 @@ El trabajo se debia realizar en grupo de 2 o 3 integrantes y siguiendo una serie
 ### Sistema Operativo :computer:   
   Todas las pruebas se realizaron en [Windows 10 version 1909](https://support.microsoft.com/es-ar/help/4517245/feature-update-via-windows-10-version-1909-enablement-package)
 ## Ejecucion 🚀
-  :one: Descomprima el contenido del repositorio
+  1. Descomprima el contenido del repositorio
   
-  :two: Ejecute ScrabbleAR.py
+  2. Ejecute ScrabbleAR.py
   
-  :three: Juegue 
+  3. Juegue 
   
 ## Autores ✒️ 
   * [Manuel Rua](https://github.com/manurua123)
