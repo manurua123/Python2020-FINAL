@@ -1,0 +1,33 @@
+# ScrabbleAR.py
+Seminario de Lenguajes 2020 Python, Facultad de Informatica, U.N.L.P.
+## Informacion :pushpin:
+El trabajo final consiste en recrear el clasico juego de Scrabble utilizando las herramientas adquiridas a lo largo del curs.
+
+El trabajo se debia realizar en grupo de 2 o 3 integrantes y siguiendo una serie de pautas propuestas por la catedra.
+
+
+
+## Requisitos 📋
+### Software :snake:
+  * [Python 3.6.8](https://www.python.org/downloads/release/python-368/)
+### Librerias 📦
+  * [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI/) - _interface grafica_
+  * [Pattern](https://github.com/clips/pattern/) - _Procesamiento del lenguaje natural_
+### Sistema Operativo :computer:   
+  Todas las pruebas se realizaron en [Windows 10 version 1909](https://support.microsoft.com/es-ar/help/4517245/feature-update-via-windows-10-version-1909-enablement-package)
+## Ejecucion 🚀
+  :one: Descomprima el contenido del repositorio
+  
+  :two: Ejecute ScrabbleAR.py
+  
+  :three: Juegue 
+  
+## Autores ✒️ 
+  * [Manuel Rua](https://github.com/manurua123)
+  * [Gonzalo Nahuel Fernández ](https://github.com/gonza08)
+  
+## Licencia 📄
+  GNU General Public License v3.0
+  
+## Agradecimientos 🎁
+  * [Tomás Barbieri](https://github.com/tomibarbieri) - _Ayudante_ 
