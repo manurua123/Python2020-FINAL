@@ -1,9 +1,7 @@
 # ScrabbleAR.py
 _Seminario de Lenguajes 2020 Python, Facultad de Informatica, U.N.L.P._
 ## Informacion :pushpin:
-El trabajo final consiste en recrear el clasico juego de Scrabble utilizando las herramientas adquiridas a lo largo del curs.
-
-El trabajo se debia realizar en grupo de 2 o 3 integrantes y siguiendo una serie de pautas propuestas por la catedra.
+ScrabbleAR es un juego basado en el popular juego Scrabble, en el que se intenta ganar puntos mediante la construcción de palabras sobre un tablero. En ScrabbleAR se juega contra la computadora y se redefinen algunas de las reglas del juego original. En particular, respecto a las palabras a construir, sólo se podrán utilizar palabras clasificadas como adjetivos, sustantivos y verbos, de acuerdo a cómo se configure el juego
 
 
 
@@ -15,13 +13,26 @@ El trabajo se debia realizar en grupo de 2 o 3 integrantes y siguiendo una serie
   * [Pattern](https://github.com/clips/pattern/) - _Procesamiento del lenguaje natural_
 ### Sistema Operativo :computer:   
   Todas las pruebas se realizaron en [Windows 10 version 1909](https://support.microsoft.com/es-ar/help/4517245/feature-update-via-windows-10-version-1909-enablement-package)
-## ¿Como jugar? 🚀
-  1. Descomprimir el contenido del repositorio
+## Contenido
+### Juego
+Contiene todo lo referido a la partida, el tablero, el atril de cada jugador, el marcador de puntaje y el tiempo.
+### configuracion
+ En este apartado el jugador puede seleccionar la duración máxima de la partida, la duración de cada turno y el nivel de juego:
+* **Fácil:** todas las letras otorgan mayor cantidad de putos, se aumenta el número de vocales, el tablero contiene muchos más multiplicadores y se admiten todo tipo de palabras.
+* **Medio:** la cantidad de letras y el puntaje es similar al original al igual que el tablero, solo se admite verbos y adjetivos.
+* **Difícil:** se reduce el puntaje de cada letra y la cantidad, el tablero contiene más casilleros de penalización y solo se admite verbos y adjetivos.
+### Puntajes
+En este se pueden observar el top 10 de puntajes en cada una de las dificultades (Fácil, Medio y Difícil) junto con la fecha y además un top 10 general de todas las puntaciones guardadas.
+
+
+
+## Como ejecutar **ScrabbleAR.py** 🚀
+  1. Compruebar que todas las librerías y programas necesarios están instalados
   
-  2. Ejecutar ScrabbleAR.py
+  2. Descomprimir que el contendio del repositorio en la misma carpeta
   
-  3. Juegar
-  
+  3. Ejercutar el archivo ScrabbleAR.py
+
 ## Autores ✒️ 
   * [Manuel Rua](https://github.com/manurua123)
   * [Gonzalo Nahuel Fernández ](https://github.com/gonza08)
