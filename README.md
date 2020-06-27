@@ -24,6 +24,10 @@ Contiene todo lo referido a la partida, el tablero, el atril de cada jugador, el
 ### Puntajes
 En este se pueden observar el top 10 de puntajes en cada una de las dificultades (Fácil, Medio y Difícil) junto con la fecha y además un top 10 general de todas las puntaciones guardadas.
 
+## Version 1.0.0 :wrench:
+* El juego solo acepta palabras en horizontal de izquierda a derecha.
+* La opcion de *pausar* esta desabilitada.
+* El juego no finaliza al terminar el tiempo o cuando no existen mas letras en la bolsa de fichas.
 
 
 ## Como ejecutar **ScrabbleAR.py** 🚀
