@@ -34,17 +34,18 @@ listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4
 'Nivel': 'medio'}
 #clases de los botones, tablero, atril pc y atril jugador
 class BotonLetra():
-    def __init__ (self,x,y=0):
-        self.valor= ' '
+    def __init__ (self,nivel,x,y=0,):
+        self.valor= 'nulo'
         self.x = x
         self.y = y
         self.estado = 0    #0 si esta libre o 1 si esta ocupado
         self.bloqueo = True  #bloquea el boton para evitar bugs
         self.key = (x,y)
-        self.boton  = sg.Button(self.valor,size= (4,2),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'),)
+        self.nivel = nivel
+        self.boton  = sg.Button( image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'),)
         self.tipo = 0
     def update(self):
-        self.boton.update(self.valor,disabled=self.bloqueo)
+        self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo)
     def getLetra(self):
         return self.valor
     def setLetra(self,v):
@@ -58,7 +59,16 @@ class BotonLetra():
         self.bloqueo = True
         self.update()
     def vaciar(self):
-        self.valor = ' '
+        if(self.tipo == 0):
+            self.valor = 'nulo'
+        elif(self.tipo == 1):
+            self.valor='palabrax2'
+        elif(self.tipo == 2):
+            self.valor='letrax2'
+        elif(self.tipo == 3):
+            self.valor='restaletra'
+        elif(self.tipo == 4):
+            self.valor='centro'
         self.estado = 0
         self.update()
     def getEstado(self):
@@ -68,47 +78,48 @@ class BotonLetra():
     def marcar(self):
         self.estado = 0
         self.bloqueo = True
-        self.boton.update(self.valor,disabled=self.bloqueo,button_color=('#222831','#f6d743'))
+        self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo,button_color=('#222831','#f6d743'))
         return self.valor
 class BotonAtril(BotonLetra):
-    def __init__ (self,x):
-        BotonLetra.__init__ (self,x)
+    def __init__ (self,nivel,x):
+        BotonLetra.__init__ (self,nivel,x)
 class BotonTablero(BotonLetra):
-    def __init__ (self,x,y):
-        BotonLetra.__init__ (self,x,y)
+    def __init__ (self,nivel,x,y):
+        BotonLetra.__init__ (self,nivel,x,y)
     def tipoCelda(self,valor):
         '''
         actualiza el color y el tipo de boton segun los multiplicadores que tenga
         '''
-        if(valor == 0):
-            self.tipo=valor
-            #self.valor='X'
-            self.boton.update(self.valor,button_color=('black','#fbfd8a')) #centro
         if (valor ==1):
             self.tipo=valor
-            #self.valor='Pala\nx2'
-            self.boton.update(self.valor,button_color=('black','#21bf73')) #PALABRA x2
+            self.valor='palabrax2'
+            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#21bf73')) #PALABRA x2
         if(valor== 2):
             self.tipo=valor
-            #self.valor='Letra\nx2'
-            self.boton.update(self.valor,button_color=('black','#4f98ca')) #LETRAS x2
+            self.valor='letrax2'
+            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#4f98ca')) #LETRAS x2
         if(valor== 3):
             self.tipo=valor
-            #self.valor='Pala\n x3'
-            self.boton.update(self.valor,button_color=('black','#fd5e53')) #Resta Letra
+            self.valor='restaletra'
+            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#fd5e53')) #Resta Letra
+        if(valor == 4):
+            self.tipo=valor
+            self.valor='centro'
+            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('#222831','#e0dede')) #centro
         else:
             None
 class BotonesAtrilPC():
-    def __init__ (self,x):
-        self.valor= ' '
+    def __init__ (self,nivel,x):
+        self.valor= 'nulo'
         self.x = x
         self.estado = 0    #0 si esta libre o 1 si esta ocupado
         self.bloqueo = True  #bloquea el boton para evitar bugs
         self.key = (x,0)
-        self.boton  = sg.Button(' ',size= (4,2),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'))
+        self.nivel = nivel
+        self.boton  = sg.Button(image_filename='imagenes/fichas/{}/secreto.png'.format(self.nivel),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'))
         self.tipo = 0
     def update(self):
-        self.boton.update(self.valor)
+        self.boton.update(image_filename='imagenes/fichas/{}/secreto.png'.format(self.nivel))
     def getLetra(self):
         return self.valor
     def setLetra(self,v):
@@ -117,25 +128,25 @@ class BotonesAtrilPC():
     def getEstado(self):
         return self.estado
     def vaciar(self):
-        self.valor = ' '
+        self.valor = 'nulo'
         self.estado = 0
         self.update()
 
 #Atril del la maquina, del jugador y el tablero de juego
 AtrilLetrasPC = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
-def botonesAtrilPC(x):
+def botonesAtrilPC(nivel,x):
     '''genera un boton en la cordenada x'''
-    AtrilLetrasPC[x] =  BotonesAtrilPC(x)
+    AtrilLetrasPC[x] =  BotonesAtrilPC(nivel,x)
     return AtrilLetrasPC[x].boton
 AtrilLetras = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
-def botonesAtril(x,atril):
+def botonesAtril(nivel,x,atril):
     '''genera un boton en la pocicion x del atril'''
-    atril[x] = BotonAtril(x)
+    atril[x] = BotonAtril(nivel,x)
     return atril[x].boton
 TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]               #creo una matriz de 15x15 vacia
-def botonTablero(x,y):
+def botonTablero(nivel,x,y):
     '''genera un boton en las cordenadas (x,y)'''
-    TableroLetras[x][y] = BotonTablero(x,y)
+    TableroLetras[x][y] = BotonTablero(nivel,x,y)
     return TableroLetras[x][y].boton
 
 #bloqueo tablero, atril o el juego para evitar bugs
@@ -185,7 +196,7 @@ def asignarPuntajesTablero(listaConfiguracion):
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
                     TableroLetras[i][j].tipoCelda(3) #extremos
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(0)
+                    TableroLetras[i][j].tipoCelda(4)
     elif(listaConfiguracion['TipoTablero']==2):
         for i in range(15):
             for j in range(15):
@@ -196,7 +207,7 @@ def asignarPuntajesTablero(listaConfiguracion):
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
                     TableroLetras[i][j].tipoCelda(3)
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(0)
+                    TableroLetras[i][j].tipoCelda(4)
     elif(listaConfiguracion['TipoTablero']==3):
         for i in range(15):
             for j in range(15):
@@ -207,11 +218,11 @@ def asignarPuntajesTablero(listaConfiguracion):
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
                     TableroLetras[i][j].tipoCelda(1)
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(0)
+                    TableroLetras[i][j].tipoCelda(4)
 def repartirFichas(bolsa_letras,atril):
     '''reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'''
     for i in range(7):
-        if(atril[i].getLetra() == ' '):
+        if(atril[i].getLetra() == 'nulo'):
             letra = random.choice(string.ascii_letters).lower()
             while(bolsa_letras[letra] == 0):
                 letra = random.choice(string.ascii_letters).lower()
@@ -310,17 +321,17 @@ def borrarPalabras(listaLetras):
     x = 0
     for i in listaLetras:
         letra = TableroLetras[i[0]][i[1]].getLetra()
-        TableroLetras[i[0]][i[1]].setLetra(' ')
+        TableroLetras[i[0]][i[1]].setLetra('nulo')
         ok = True
         while(ok) & (x<7):
-            if(AtrilLetras[x].getLetra() == ' '):
+            if(AtrilLetras[x].getLetra() == 'nulo'):
                 AtrilLetras[x].setLetra(letra)
                 ok= False
             x = x + 1
-def cambioMano(atrilPJ):
+def cambioMano(atrilPJ,listaConfiguracion):
     '''Cambia la mano del jugador'''
     AtrilCambiar = [0 for x in range(7)] #atril de 7 elementos
-    Atril = [botonesAtril(x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
+    Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
 
     layout2 = [
     [sg.Text('seleccione las letras que decea cambiar')],
@@ -395,9 +406,9 @@ def elimiarLetrasAtril(palabra,atril):
 def main(listaConfiguracion=listaPorDefecto):
 
     #Interface grafica
-    Atril = [botonesAtril(x,AtrilLetras)for x in range(7)]  #creo el atril de 7 botones
-    AtrilPC = [botonesAtrilPC(x)for x in range(7)] #creo el atril de 7 botones para la PC
-    Tablero = [[botonTablero(x,y) for x in range(15)] for y in range(15)] #creo el el trablero de 15x15 botones
+    Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilLetras)for x in range(7)]  #creo el atril de 7 botones
+    AtrilPC = [botonesAtrilPC(listaConfiguracion['Nivel'],x)for x in range(7)] #creo el atril de 7 botones para la PC
+    Tablero = [[botonTablero(listaConfiguracion['Nivel'],x,y) for x in range(15)] for y in range(15)] #creo el el trablero de 15x15 botones
     botonesTurno= [
     [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (12,2)),
     sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (12,2)),
@@ -431,14 +442,11 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Text('Tiempo Turno',size=(15,1)),sg.Text(key='timerTurno',size=(7,1)),],
 
     ]
+
     #contiene los puntajes y el tiempo que resta del turno
     columna2= [
     [sg.Column(columnaPuntaje,)],
     [sg.Column(columnaTiempo,)],
-    [sg.Text('MULTIPLICADORES',size=(20,1))],
-    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#4f98ca')),sg.Text('Duplica el valor de la letra',)], #duplica Letra
-    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#21bf73')),sg.Text('Duplica el valor de la palabra',)], #duplica palabra
-    [sg.Button(' ',size= (4,2),disabled=True,pad=(1,1), button_color=('#222831','#fd5e53')),sg.Text('Resta el valor de la letra',)], #resta letra
     [sg.Text('¿Que fue pasando?')],
     [sg.Listbox('',size =(30,12),key='acciones')],
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
@@ -515,11 +523,14 @@ def main(listaConfiguracion=listaPorDefecto):
             if (event is 'Pasar')&(len(listaPoiciones)==0) :  #si se preciona el boton confirmar y no se pusieron fichas en el tablero
                 turno = False
                 del listaPoiciones[:]
+            else:
+                listaAcciones.append('Todavia quedan letras en el tablero ' )
+                window['acciones'].update(listaAcciones[::-1])
             #BOTON CAMBIAR
             if event is 'Cambiar':
                 if (intentosCambio <3):
                     bloquearJuego(window)
-                    letrasCambio = cambiarLetras.main(AtrilLetras)
+                    letrasCambio = cambiarLetras.main(AtrilLetras,listaConfiguracion)
                     if (letrasCambio):
                         intentosCambio =intentosCambio+1
                         for i in letrasCambio:
@@ -539,7 +550,7 @@ def main(listaConfiguracion=listaPorDefecto):
         elif event in cordTablero:
             cord = event
             #reviso si el tablero esta vacion en esa posicion
-            if(TableroLetras[cord[0]][cord[1]].getLetra()==' '):
+            if(TableroLetras[cord[0]][cord[1]].getLetra()in['nulo','restaletra','letrax2','palabrax2','centro']):
                 TableroLetras[cord[0]][cord[1]].setLetra(letra) #asigno la letra a la posicion
                 AtrilLetras[int(letraAtril[1])].vaciar()  #elimino esa ficha del atril
                 listaPoiciones.append(cord)

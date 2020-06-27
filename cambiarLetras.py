@@ -9,10 +9,10 @@ sg.SetOptions(background_color='#222831',
        border_width=1,
        )
 
-def main(atrilPJ=0):
+def main(atrilPJ,listaConfiguracion):
 
     AtrilCambiar = [0 for x in range(7)] #atril de 7 elementos
-    Atril = [juego.botonesAtril(x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
+    Atril = [juego.botonesAtril(listaConfiguracion['Nivel'],x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
 
     layout2 = [
     [sg.Text('seleccione las letras que decea cambiar')],
