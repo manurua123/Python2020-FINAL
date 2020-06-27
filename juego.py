@@ -520,12 +520,13 @@ def main(listaConfiguracion=listaPorDefecto):
                     window['acciones'].update(listaAcciones[::-1])
                     del listaPoiciones[:] #vacio la lista con las letras que se usaron
             #BOTON PASAR
-            if (event is 'Pasar')&(len(listaPoiciones)==0) :  #si se preciona el boton confirmar y no se pusieron fichas en el tablero
-                turno = False
-                del listaPoiciones[:]
-            else:
-                listaAcciones.append('Todavia quedan letras en el tablero ' )
-                window['acciones'].update(listaAcciones[::-1])
+            if (event is 'Pasar'):
+                if(len(listaPoiciones)==0):  #si se preciona el boton confirmar y no se pusieron fichas en el tablero
+                    turno = False
+                    del listaPoiciones[:]
+                else:
+                    listaAcciones.append('Todavia quedan letras en el tablero ' )
+                    window['acciones'].update(listaAcciones[::-1])
             #BOTON CAMBIAR
             if event is 'Cambiar':
                 if (intentosCambio <3):
