@@ -7,7 +7,7 @@ ScrabbleAR es un juego basado en el popular juego Scrabble, en el que se intenta
 
 ## Requisitos 📋
 ### Software 
-  * :snake: [Python 3.6.8](https://www.python.org/downloads/release/python-368/)
+  * [Python 3.6.8](https://www.python.org/downloads/release/python-368/) :snake:
 ### Librerias 
   * [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI/) - _interface grafica_
   * [Pattern](https://github.com/clips/pattern/) - _Procesamiento del lenguaje natural_
