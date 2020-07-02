@@ -21,7 +21,7 @@ listaConfiguracion={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h
 'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1},
 'TipoPalabra':['/PRP','/JJ','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG','/VSI', '/VSN', '/VSP', '/VSS'],
 'TiempoTurno': 60,
-'TiempoPartida': 10,
+'TiempoPartida': 1,
 'TipoTablero':1,
 'Nivel': 'facil'}
 
