@@ -133,7 +133,7 @@ class BotonesAtrilPC():
         self.update()
 
 #Atril del la maquina, del jugador y el tablero de juego
-AtrilLetrasPC = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
+AtrilLetrasPC = [0 for y in range(7)]                                           #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
 def botonesAtrilPC(nivel,x):
     '''genera un boton en la cordenada x'''
     AtrilLetrasPC[x] =  BotonesAtrilPC(nivel,x)
@@ -184,6 +184,18 @@ def desbloquearJuego(window):
     window['Cambiar'].update(disabled=False)
 
 #inicil de la partida
+def abrirPartida(tablero,atrilPJ,atrilPC,listaConfiguracion):
+    '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida '''
+    with open('partidaGuardada.json','r+') as file:
+        datos = json.load(file)
+    for x in range(15):
+        for y in range(15):
+            tablero[x][y].setLetra(datos['tablero']['{},{}'.format(x,y)])
+            tablero[x][y].tipoCelda(datos['tipoTablero']['{},{}'.format(x,y)])
+    for x in range(7):
+        atrilPJ[x].setLetra(datos['atrilPJ']['{}'.format(x)])
+        atrilPC[x].setLetra(datos['atrilPC']['{}'.format(x)])
+    listaConfiguracion = datos['listaConfiguracion']
 def asignarPuntajesTablero(listaConfiguracion):
     '''asigna un tipo especifico a cada boton del tablero'''
     if (listaConfiguracion['TipoTablero']==1):
@@ -252,25 +264,76 @@ def sumarPuntos(Lpalabra,valorLetras):
         elif(tipo == 3):
             suma = suma - valorLetras[letra]
     return (suma * aux)
-def ventana_salir(ventana):
+#ventanas emergentes
+def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
-        [sg.Text('¿Seguro que desea salir?')],
-        [sg.Button('SI',size= (5,1)),sg.Button('NO',size= (5,1))]
+        [sg.Text('¿Decea guardar la partida?')],
+        [sg.Button('SI',size= (5,1)),sg.Button('NO',size= (5,1)),sg.Button('Cancelar',size= (9,1))]
     ]
     window = sg.Window('', layout,font=("Helvetica", 12))
     event , values = window.read()
     while  True:
         if event == 'SI':
             window.close()
+            guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion)
             desbloquearJuego(ventana)
             return True
-        else:
+        if event == 'NO':
+            window.close()
+            desbloquearJuego(ventana)
+            return True
+        if event == 'Cancelar':
             window.close()
             desbloquearJuego(ventana)
             return False
-
+def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
+    '''bloquea el juego y depues confirma si el juegador quiere salir'''
+    bloquearJuego(ventana)
+    layout = [
+        [sg.Text('¿Decea seguir con la partida guardada?')],
+        [sg.Button('SI',size= (5,1)),sg.Button('NO',size= (5,1))]
+    ]
+    window = sg.Window('', layout,font=("Helvetica", 12))
+    event , values = window.read()
+    try:
+        while  True:
+                if event == 'SI':
+                        window.close()
+                        abrirPartida(tablero,atrilPJ,atrilPC,listaConfiguracion)
+                        desbloquearJuego(ventana)
+                        ventana['Comenzar'].update(disabled=True)
+                        ventana['Pasar'].update(disabled=False)
+                        ventana['Confirmar'].update(disabled=False)
+                        ventana['Cambiar'].update(disabled=False)
+                        desbloquearAtril()
+                        bloquearTablero()
+                        return True
+                else:
+                    repartirFichas(listaConfiguracion['CantidadLetras'],atrilPJ)
+                    asignarPuntajesTablero(listaConfiguracion)
+                    window.close()
+                    desbloquearJuego(ventana)
+                    ventana['Comenzar'].update(disabled=True)
+                    ventana['Pasar'].update(disabled=False)
+                    ventana['Confirmar'].update(disabled=False)
+                    ventana['Cambiar'].update(disabled=False)
+                    desbloquearAtril()
+                    bloquearTablero()
+                    return  True
+    except FileNotFoundError:
+        ventana_error_archivo()
+def ventana_error_archivo():
+    '''
+    indica que el archivo que se busca no existe en la ubicacion seleccionada
+    '''
+    layout = [[sg.Text('No existen partidas guardadas',)],
+              [sg.OK(size=(10,2))]
+              ]
+    window = sg.Window('ERROR', layout)
+    event, values = window.read()
+    window.close()
 #fin de la Partida
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
     '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
@@ -283,6 +346,33 @@ def guardarPuntaje(listaConfiguracion,puntaje,ruta):
         file.seek(0)
         file.write(json.dumps(json_data))
         file.truncate()
+def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion):
+    '''recibe el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y guarda toda esa informacion en un .json '''
+    datos = {}
+    datoTablero={}
+    tipoTablero={}
+    datoPJ={}
+    datoPC={}
+    for x in range(15):
+        for y in range(15):
+            datoTablero['{},{}'.format(x,y)] = tablero[x][y].getLetra()
+            tipoTablero['{},{}'.format(x,y)]=tablero[x][y].getTipo()
+    for x in range (7):
+        datoPJ['{}'.format(x)]=atrilPJ[x].getLetra()
+        datoPC['{}'.format(x)]=atrilPC[x].getLetra()
+    datos['tablero']=datoTablero
+    datos['tipoTablero']=tipoTablero
+    datos['atrilPJ']=datoPJ
+    datos['atrilPC']=datoPC
+    datos['listaConfiguracion']=listaConfiguracion
+    try:
+        with open('partidaGuardada.json','r+') as file:
+            file.write(json.dumps(datos))
+            file.truncate()
+    except FileNotFoundError:
+        with open('partidaGuardada.json','w') as file:
+            file.write(json.dumps(datos))
+            file.truncate()
 
 #turno del jugador
 def formarListaPalabra(listaLetras):
@@ -431,8 +521,7 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
     ]
     columnaPuntaje=[
-    [sg.Column(columnaPuntajePJ),sg.Column(columnaPuntajePC)]
-    ,
+    [sg.Column(columnaPuntajePJ),sg.Column(columnaPuntajePC)],
 
     ]
     columnaTiempo=[
@@ -450,8 +539,8 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Text('¿Que fue pasando?')],
     [sg.Listbox('',size =(30,12),key='acciones')],
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
-    [sg.Button('Pausar',auto_size_button=False,tooltip='Falta Implementar',size= (20,2),disabled = True)],
-    [sg.Button('Salir',auto_size_button=False,tooltip='salir al menu',size= (20,2))],
+    [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (20,2),disabled = False)],
+    [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (20,2))],
 
 
     ]
@@ -476,7 +565,6 @@ def main(listaConfiguracion=listaPorDefecto):
     intentosCambio = 0 #cantidad de cambios que le quedan al jugador
     listaAcciones = [] #carga las distintas acciones que pasan cada turno
     while True:
-
         event, values = window.read(timeout=10)
         #Contador tiempo
         window['timerTurno'].update(
@@ -487,23 +575,16 @@ def main(listaConfiguracion=listaPorDefecto):
             contadorTiempoTurno = contadorTiempoTurno +1
             contadorTiempoPartida = contadorTiempoPartida +1
         if event is None or event == 'Salir':
-            if(ventana_salir(window)):
+            if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion)):
                 guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
                 break
         #TURNO DEl JUGADOR
         window['contadorPuntosPJ'].update(puntosPJ)
         window['contadorPuntosPC'].update(puntosPC)
         if event is 'Comenzar':
-            window['Comenzar'].update(disabled=True)
-            window['Pasar'].update(disabled=False)
-            window['Confirmar'].update(disabled=False)
-            window['Cambiar'].update(disabled=False)
-            desbloquearAtril()
-            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
-            asignarPuntajesTablero(listaConfiguracion)
+            comenzar = ventana_comenzar(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion)
             window['contTurno'].update(cont_turno)
-            comenzar = True
-        if event in ['Confirmar','Cambiar','Pasar','Comenzar','Pausar']:
+        if event in ['Confirmar','Cambiar','Pasar','Comenzar','Guardar']:
             #BOTON CONFIRMAR
             if (event is 'Confirmar') &(len(listaPoiciones)>0): #si se preciona el boton confirmar y se pusieron fichas en el tablero
                 if(confirmarPalabra(formarListaPalabra(listaPoiciones),listaConfiguracion['TipoPalabra'])):
@@ -542,6 +623,8 @@ def main(listaConfiguracion=listaPorDefecto):
 
                 else:
                     window['Cambiar'].update(disabled=True)
+            if (event is 'Guardar'):
+                guardarPartida(TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion['CantidadLetras'])
         #se preciona algun boton en el atril
         elif event in cordAtril:  #se preciona algun boton en el atril
             letraAtril = event
