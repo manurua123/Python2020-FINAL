@@ -39,7 +39,6 @@ En este se pueden observar el top 10 de puntajes en cada una de las dificultades
 
 ## Autores ✒️ 
   * [Manuel Rua](https://github.com/manurua123)
-  * [Gonzalo Nahuel Fernández ](https://github.com/gonza08)
   
 ## Licencia :unlock:
   GNU General Public License v3.0
