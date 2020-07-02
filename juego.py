@@ -27,7 +27,7 @@ sg.SetOptions(background_color='#222831',
 #valores para testear
 listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},
 'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':0,'i':6,'j':2,'k':0,'l':4,'m':3,'n':5,'o':8,'p':2,'q':0,'r':4,'s':5,'t':4,'u':6,'v':0,'w':0,'x':0,'y':0,'z':0},
-'TipoPalabra':['/WP','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG', '/VSI', '/VSN', '/VSP', '/VSS'],
+'TipoPalabra':['/NN','/WP','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG', '/VSI', '/VSN', '/VSP', '/VSS'],
 'TiempoTurno': 30,
 'TiempoPartida':10,
 'TipoTablero':1,
@@ -73,6 +73,8 @@ class BotonLetra():
         self.update()
     def getEstado(self):
         return self.estado
+    def setEstado(self,e):
+        self.estado = e
     def getTipo(self):
         return self.tipo
     def marcar(self):
@@ -184,7 +186,7 @@ def desbloquearJuego(window):
     window['Cambiar'].update(disabled=False)
 
 #inicil de la partida
-def abrirPartida(tablero,atrilPJ,atrilPC,listaConfiguracion):
+def abrirPartida(window,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida '''
     with open('partidaGuardada.json','r+') as file:
         datos = json.load(file)
@@ -192,10 +194,15 @@ def abrirPartida(tablero,atrilPJ,atrilPC,listaConfiguracion):
         for y in range(15):
             tablero[x][y].setLetra(datos['tablero']['{},{}'.format(x,y)])
             tablero[x][y].tipoCelda(datos['tipoTablero']['{},{}'.format(x,y)])
+            tablero[x][y].setEstado(datos['estadoTablero']['{},{}'.format(x,y)])
     for x in range(7):
         atrilPJ[x].setLetra(datos['atrilPJ']['{}'.format(x)])
         atrilPC[x].setLetra(datos['atrilPC']['{}'.format(x)])
     listaConfiguracion = datos['listaConfiguracion']
+    puntosPC = datos['puntosPC']
+    puntosPJ = datos['puntosPJ']
+    window['contadorPuntosPJ'].update(puntosPJ)
+    window['contadorPuntosPC'].update(puntosPC)
 def asignarPuntajesTablero(listaConfiguracion):
     '''asigna un tipo especifico a cada boton del tablero'''
     if (listaConfiguracion['TipoTablero']==1):
@@ -239,33 +246,9 @@ def repartirFichas(bolsa_letras,atril):
             while(bolsa_letras[letra] == 0):
                 letra = random.choice(string.ascii_letters).lower()
             atril[i].setLetra(letra)
-def sumarPuntos(Lpalabra,valorLetras):
-    '''
-    recibe una lista con la posicion de las letras que forman la palabra que se ingreso,
-    calcula el puntaje de la palabra ingresada y lo multiplica por los cosito de colores (no me sale la palabra)
-    tipo 0: nada
-    tipo 1: palabra x2
-    tipo 2: letras x2
-    tipo 3: resto la letra
-    '''
-    suma = 0
-    aux = 1
 
-    for i in Lpalabra:
-        letra = TableroLetras[i[0]][i[1]].getLetra()
-        tipo =  TableroLetras[i[0]][i[1]].getTipo()
-        if(tipo == 0):
-            suma = suma + valorLetras[letra]
-        elif(tipo ==1):
-            suma = suma + valorLetras[letra]
-            aux = aux +1
-        elif(tipo == 2):
-            suma = suma + valorLetras[letra]*2
-        elif(tipo == 3):
-            suma = suma - valorLetras[letra]
-    return (suma * aux)
 #ventanas emergentes
-def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
+def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
@@ -277,7 +260,7 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
     while  True:
         if event == 'SI':
             window.close()
-            guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion)
+            guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
             desbloquearJuego(ventana)
             return True
         if event == 'NO':
@@ -288,7 +271,7 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
             window.close()
             desbloquearJuego(ventana)
             return False
-def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
+def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
@@ -301,7 +284,7 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
         while  True:
                 if event == 'SI':
                         window.close()
-                        abrirPartida(tablero,atrilPJ,atrilPC,listaConfiguracion)
+                        abrirPartida(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
                         desbloquearJuego(ventana)
                         ventana['Comenzar'].update(disabled=True)
                         ventana['Pasar'].update(disabled=False)
@@ -312,6 +295,7 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion):
                         return True
                 else:
                     repartirFichas(listaConfiguracion['CantidadLetras'],atrilPJ)
+                    repartirFichas(listaConfiguracion['CantidadLetras'],atrilPC)
                     asignarPuntajesTablero(listaConfiguracion)
                     window.close()
                     desbloquearJuego(ventana)
@@ -334,6 +318,7 @@ def ventana_error_archivo():
     window = sg.Window('ERROR', layout)
     event, values = window.read()
     window.close()
+
 #fin de la Partida
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
     '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
@@ -346,25 +331,30 @@ def guardarPuntaje(listaConfiguracion,puntaje,ruta):
         file.seek(0)
         file.write(json.dumps(json_data))
         file.truncate()
-def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion):
+def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''recibe el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y guarda toda esa informacion en un .json '''
     datos = {}
     datoTablero={}
     tipoTablero={}
+    estadoTablero={}
     datoPJ={}
     datoPC={}
     for x in range(15):
         for y in range(15):
             datoTablero['{},{}'.format(x,y)] = tablero[x][y].getLetra()
             tipoTablero['{},{}'.format(x,y)]=tablero[x][y].getTipo()
+            estadoTablero['{},{}'.format(x,y)]=tablero[x][y].getEstado()
     for x in range (7):
         datoPJ['{}'.format(x)]=atrilPJ[x].getLetra()
         datoPC['{}'.format(x)]=atrilPC[x].getLetra()
     datos['tablero']=datoTablero
     datos['tipoTablero']=tipoTablero
+    datos['estadoTablero']=estadoTablero
     datos['atrilPJ']=datoPJ
     datos['atrilPC']=datoPC
     datos['listaConfiguracion']=listaConfiguracion
+    datos['puntosPJ'] = puntosPJ
+    datos['puntosPC'] = puntosPC
     try:
         with open('partidaGuardada.json','r+') as file:
             file.write(json.dumps(datos))
@@ -380,16 +370,29 @@ def formarListaPalabra(listaLetras):
     recibe la lista de las posciones donde se colocaron las letrasPuntos
     devulve una lista con las posiciones de las letras consecutivas
     '''
-    palabra = []
+    palabraH = []
+    palabraV = []
     x=int(listaLetras[0][0])
     y=int(listaLetras[0][1])
-    palabra.append((x,y))
+    palabraH.append((x,y))
+    palabraV.append((x,y))
     for i in listaLetras:
         if(i[0] == x+1):
             x=int(i[0])
             y=int(i[1])
-            palabra.append((x,y))
-    return(palabra)
+            palabraH.append((x,y))
+        if(i[1] == y+1):
+            x=int(i[0])
+            y=int(i[1])
+            palabraV.append((x,y))
+    if(len(palabraH)>len(palabraV)):
+        palabraV.pop(0)
+        borrarPalabras(palabraV)
+        return palabraH
+    else:
+        palabraH.pop(0)
+        borrarPalabras(palabraH)
+        return palabraV
 def confirmarPalabra(Lpalabra,tipoPalabra):
     '''
     recibe una palabra y confirma si es un sustantivo (/NM), un vervo (/VB), un adjetivo(/JJ) o un pronombre (/PRS)
@@ -437,7 +440,32 @@ def cambioMano(atrilPJ,listaConfiguracion):
         for i in range(7):
             AtrilCambiar[i].setLetra(atrilPJ[i].getLetra())
     window.close()
+def sumarPuntos(Lpalabra,valorLetras):
+    '''
+    recibe una lista con la posicion de las letras que forman la palabra que se ingreso,
+    calcula el puntaje de la palabra ingresada y lo multiplica por los cosito de colores (no me sale la palabra)
+    tipo 0: nada
+    tipo 1: palabra x2
+    tipo 2: letras x2
+    tipo 3: resto la letra
+    '''
+    suma = 0
+    aux = 1
 
+    for i in Lpalabra:
+        letra = TableroLetras[i[0]][i[1]].getLetra()
+        tipo =  TableroLetras[i[0]][i[1]].getTipo()
+        if(letra != 'nulo'):
+            if(tipo == 0):
+                suma = suma + valorLetras[letra]
+            elif(tipo ==1):
+                suma = suma + valorLetras[letra]
+                aux = aux +1
+            elif(tipo == 2):
+                suma = suma + valorLetras[letra]*2
+            elif(tipo == 3):
+                suma = suma - valorLetras[letra]
+    return (suma * aux)
 #turno de la PC
 def crearPalabra(Atril,listaConfiguracion):
     '''crea una palabra con las letras que se pusieron en el tablero'''
@@ -448,33 +476,50 @@ def crearPalabra(Atril,listaConfiguracion):
     palabra = generarPalabra.main(mano,listaConfiguracion['TipoPalabra'])
     if(palabra != None):
         return palabra
-def intentoColocarPalabra(palabra):
+def intentoColocarPalabra(palabra,tablero):
     '''la pc intenta colocar la palabra que formo en una ubicacion random dentro del tablero'''
-    x = random.randrange(14)
-    if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
-        x=x-len(palabra)
-    y = random.randrange(14)
-    vacio = True
+    orientacion = random.choice(['vertical','horizontal']) #la palabra va a ir Verticarl u Horizoantal
     cant = 0
+    vacio = True
     Lpalabra =[]
+    if(orientacion == 'horizontal'):
+        x = random.randrange(14)
+        if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
+            x=x-len(palabra)
+        y = random.randrange(14)
 
-    while (vacio) & (cant<len(palabra)):
-        if(TableroLetras[x][y].getEstado()==0):
-            Lpalabra.append((x,y))
+        while (vacio) & (cant<len(palabra)):
+            if(tablero[x][y].getEstado()==0):
+                Lpalabra.append((x,y))
+            else:
+                vacio = False
+            x = x +1
+            cant = cant + 1
+        if vacio:
+            return (True,Lpalabra)
         else:
-            vacio = False
-        x = x +1
-        cant = cant + 1
-    if vacio:
-        return (True,Lpalabra)
-    else:
-
-        return (False,None)
-def colocaPalabra(palabra):
+            return (False,None)
+    if( orientacion == 'vertical'):
+        y = random.randrange(14)
+        if(y + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
+            y=y-len(palabra)
+        x = random.randrange(14)
+        while (vacio) & (cant<len(palabra)):
+            if(tablero[x][y].getEstado()==0):
+                Lpalabra.append((x,y))
+            else:
+                vacio = False
+            y = y +1
+            cant = cant + 1
+        if vacio:
+            return (True,Lpalabra)
+        else:
+            return (False,None)
+def colocaPalabra(palabra,tablero):
     '''la pc coloca la palabra en una ubicacion random permitida dentro del tablero'''
-    aux = intentoColocarPalabra(palabra)
-    while( aux[0] == False):
-        aux = intentoColocarPalabra(palabra)
+    aux = intentoColocarPalabra(palabra,tablero)
+    while(aux[0] == False):
+        aux = intentoColocarPalabra(palabra,tablero)
     numero = 0
     while(numero < len(palabra)):
         i = aux[1][numero]
@@ -494,7 +539,6 @@ def elimiarLetrasAtril(palabra,atril):
 
 
 def main(listaConfiguracion=listaPorDefecto):
-
     #Interface grafica
     Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilLetras)for x in range(7)]  #creo el atril de 7 botones
     AtrilPC = [botonesAtrilPC(listaConfiguracion['Nivel'],x)for x in range(7)] #creo el atril de 7 botones para la PC
@@ -512,16 +556,16 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Text('ATRIL Jugador',size=(30,1),font=("Helvetica", 15))],
     [sg.Column([Atril]), sg.Column(botonesTurno)],
     ]
-    columnaPuntajePJ=[
+    columnapuntosPJ=[
     [sg.Text('Jugador', size=(10,1))],
     [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
     ]
-    columnaPuntajePC=[
+    columnapuntosPC=[
     [sg.Text('Computadora', size=(10,1))],
     [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
     ]
     columnaPuntaje=[
-    [sg.Column(columnaPuntajePJ),sg.Column(columnaPuntajePC)],
+    [sg.Column(columnapuntosPJ),sg.Column(columnapuntosPC)],
 
     ]
     columnaTiempo=[
@@ -565,6 +609,7 @@ def main(listaConfiguracion=listaPorDefecto):
     intentosCambio = 0 #cantidad de cambios que le quedan al jugador
     listaAcciones = [] #carga las distintas acciones que pasan cada turno
     while True:
+
         event, values = window.read(timeout=10)
         #Contador tiempo
         window['timerTurno'].update(
@@ -575,14 +620,12 @@ def main(listaConfiguracion=listaPorDefecto):
             contadorTiempoTurno = contadorTiempoTurno +1
             contadorTiempoPartida = contadorTiempoPartida +1
         if event is None or event == 'Salir':
-            if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion)):
+            if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)):
                 guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
                 break
         #TURNO DEl JUGADOR
-        window['contadorPuntosPJ'].update(puntosPJ)
-        window['contadorPuntosPC'].update(puntosPC)
         if event is 'Comenzar':
-            comenzar = ventana_comenzar(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion)
+            comenzar = ventana_comenzar(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)
             window['contTurno'].update(cont_turno)
         if event in ['Confirmar','Cambiar','Pasar','Comenzar','Guardar']:
             #BOTON CONFIRMAR
@@ -624,7 +667,7 @@ def main(listaConfiguracion=listaPorDefecto):
                 else:
                     window['Cambiar'].update(disabled=True)
             if (event is 'Guardar'):
-                guardarPartida(TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion['CantidadLetras'])
+                guardarPartida(TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)
         #se preciona algun boton en el atril
         elif event in cordAtril:  #se preciona algun boton en el atril
             letraAtril = event
@@ -642,24 +685,29 @@ def main(listaConfiguracion=listaPorDefecto):
 
         #TURNO DE LA PC
         if (not turno) or (contadorTiempoTurno == (100*listaConfiguracion['TiempoTurno'])):
-            bloquearJuego(window)
+
+            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
+            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
+
             if listaPoiciones: #si todavia quedan letras en el tablero que no son una palabra
                 borrarPalabras(listaPoiciones)
                 del listaPoiciones[:]
+            bloquearJuego(window)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
+
             contadorTiempoTurno = 0
             lPalabra =[]
             palabra = crearPalabra(AtrilLetrasPC,listaConfiguracion)
+
             if (palabra !=None):
-                puntos = sumarPuntos(colocaPalabra(palabra),listaConfiguracion['PuntajeLetra'])
+                puntos = sumarPuntos(colocaPalabra(palabra,TableroLetras),listaConfiguracion['PuntajeLetra'])
                 puntosPC =puntosPC + puntos
                 listaAcciones.append('La maquina encontro la plabra {}'.format(palabra))
                 listaAcciones.append('La maquina sumo {} puntos'.format(puntos))
                 window['acciones'].update(listaAcciones[::-1])
                 window['contadorPuntosPC'].update(puntosPC)
                 elimiarLetrasAtril(palabra,AtrilLetrasPC)
-            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
-            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
+
             turno = True
             window['contTurno'].update(cont_turno)
             cont_turno +=1;
