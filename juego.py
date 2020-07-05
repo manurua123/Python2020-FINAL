@@ -15,7 +15,6 @@ import generarPalabra
 import test
 import cambiarLetras
 
-
 #configurtacion de colores
 sg.SetOptions(background_color='#222831',
        text_element_background_color='#222831',
@@ -30,7 +29,7 @@ listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4
 'TipoPalabra':['/WP','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG', '/VSI', '/VSN', '/VSP', '/VSS'],
 'TiempoTurno': 30,
 'TiempoPartida':1,
-'TipoTablero':1,
+'TipoTablero':2,
 'Nivel': 'medio'}
 #clases de los botones, tablero, atril pc y atril jugador
 class BotonLetra():
@@ -252,7 +251,7 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,pu
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
-        [sg.Text('¿Decea guardar la partida?')],
+        [sg.Text('¿quiere guardar la partida?')],
         [sg.Button('SI',size= (5,2)),sg.Button('NO',size= (5,2)),sg.Button('Cancelar',size= (9,2))]
     ]
     window = sg.Window('', layout,font=("Helvetica", 12))
@@ -275,7 +274,7 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloquearJuego(ventana)
     layout = [
-        [sg.Text('¿Decea seguir con la partida guardada?')],
+        [sg.Text('¿Quiere seguir con la partida guardada?')],
         [sg.Button('SI',size= (8,2)),sg.Button('NO',size= (8,2))]
     ]
     window = sg.Window('', layout,font=("Helvetica", 12))
@@ -457,7 +456,7 @@ def cambioMano(atrilPJ,listaConfiguracion):
     Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
 
     layout2 = [
-    [sg.Text('seleccione las letras que decea cambiar')],
+    [sg.Text('seleccione las letras que desea cambiar')],
     [sg.Column([Atril])],
     [sg.Button('Confirmar',size= (15,1)),sg.Button('Cancelar',size= (15,1))],
     ]
@@ -488,6 +487,8 @@ def sumarPuntos(Lpalabra,valorLetras):
         if(letra != 'nulo'):
             if(tipo == 0):
                 suma = suma + valorLetras[letra]
+            elif(tipo == 4):
+                suma = suma + valorLetras[letra]
             elif(tipo ==1):
                 suma = suma + valorLetras[letra]
                 aux = aux +1
@@ -498,7 +499,7 @@ def sumarPuntos(Lpalabra,valorLetras):
     return (suma * aux)
 #turno de la PC
 def crearPalabra(Atril,listaConfiguracion):
-    '''crea una palabra con las letras que se pusieron en el tablero'''
+    '''crea una palabra con las letras que se pusieron en el tablero, sin no puede generar una palabra avisa por pantalla que ya no puede. '''
     mano = []
     palabra = ''
     for i in range(7):
@@ -506,6 +507,8 @@ def crearPalabra(Atril,listaConfiguracion):
     palabra = generarPalabra.main(mano,listaConfiguracion['TipoPalabra'])
     if(palabra != None):
         return palabra
+    else:
+        print('ya no puede generar palabras')
 def intentoColocarPalabra(palabra,tablero):
     '''la pc intenta colocar la palabra que formo en una ubicacion random dentro del tablero'''
     orientacion = random.choice(['vertical','horizontal']) #la palabra va a ir Verticarl u Horizoantal
@@ -698,16 +701,19 @@ def main(listaConfiguracion=listaPorDefecto):
             #BOTON CAMBIAR
             if event is 'Cambiar':
                 if (intentosCambio <3):
-                    bloquearJuego(window)
-                    letrasCambio = cambiarLetras.main(AtrilLetras,listaConfiguracion)
-                    if (letrasCambio):
-                        intentosCambio =intentosCambio+1
-                        for i in letrasCambio:
-                            AtrilLetras[i].vaciar()
-                            listaConfiguracion['CantidadLetras'][AtrilLetras[i].getLetra()] =+1
-                    repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
-                    desbloquearJuego(window)
-
+                    if(len(listaPoiciones)==0):
+                        bloquearJuego(window)
+                        letrasCambio = cambiarLetras.main(AtrilLetras,listaConfiguracion)
+                        if (letrasCambio):
+                            intentosCambio =intentosCambio+1
+                            for i in letrasCambio:
+                                AtrilLetras[i].vaciar()
+                                listaConfiguracion['CantidadLetras'][AtrilLetras[i].getLetra()] =+1
+                        repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
+                        desbloquearJuego(window)
+                    else:
+                        listaAcciones.append('Todavia quedan letras en el tablero ' )
+                        window['acciones'].update(listaAcciones[::-1])
                 else:
                     window['Cambiar'].update(disabled=True)
             if (event is 'Guardar'):
@@ -736,7 +742,7 @@ def main(listaConfiguracion=listaPorDefecto):
         if (not turno) or (contadorTiempoTurno == (100*listaConfiguracion['TiempoTurno'])):
             bloquearJuego(window)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
-
+            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
             if listaPoiciones: #si todavia quedan letras en el tablero que no son una palabra
                 borrarPalabras(listaPoiciones)
                 del listaPoiciones[:]

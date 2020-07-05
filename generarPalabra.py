@@ -8,7 +8,7 @@ from pattern.es import parse
 
 def clasifico(palabra, tipoPalabra):
     '''
-    Función que recibe una palabra y verifica que sea aadjetivo o verbo
+    Función que recibe una palabra y verifica que sea adjetivo o verbo
     :param palabra: es un string
     :param clasificacion: un diccionario que tiene las clasficaciones que busco
     :return: True si está dentro de la clasificación, False caso contrario
@@ -18,7 +18,6 @@ def clasifico(palabra, tipoPalabra):
     if(dato in tipoPalabra):
         return True
 
-
 def es_pal(pal):
     '''
     Verifica si es una palabra válida
@@ -26,13 +25,11 @@ def es_pal(pal):
     :return: True si es, False caso contrario
     '''
     if pal in pattern.es.lexicon:
-        # print(pal + " en lexicon ")
+        print(pal + " en lexicon ")
         if pal in pattern.es.spelling:
-            # print(pal + " en spelling ")
+            print(pal + " en spelling ")
             return True
     return False
-
-
 def armo_palabra(letras_palabras):
     '''
     Armo las posibles combinaciones y permutaciones con una lista de letras recibidas
@@ -48,21 +45,19 @@ def armo_palabra(letras_palabras):
     for i in range(2, len(letras) + 1):
         palabras.update((map("".join, permutations(letras, i))))
     return (palabras)
-
-
-
-
-def main(mano,TIPO):
+def main(mano,tipo):
     lista_palabras = armo_palabra(mano)
     palabras_adj_verb = []
     palabras_validas = []
     for pal in lista_palabras:
         if es_pal(pal):
             palabras_validas.append(pal)
-            if clasifico(pal, TIPO):
+            if clasifico(pal, tipo):
                 palabras_adj_verb.append(pal)
-
-    return(random.choice(palabras_validas))
+    if(palabras_validas):
+        return(palabras_validas[0])
+    else:
+        return None
 
 if __name__ == '__main__':
     main()
