@@ -717,6 +717,7 @@ def main(listaConfiguracion=listaPorDefecto):
                                 listaConfiguracion['CantidadLetras'][AtrilLetras[i].getLetra()] =+1
                         repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
                         desbloquearJuego(window)
+                        turno = False
                     else:
                         listaAcciones.append('----------------------------------')
                         listaAcciones.append('Todavia quedan letras en el tablero ' )
