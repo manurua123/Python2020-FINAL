@@ -384,9 +384,9 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
         letraPC = atrilPC[x].getLetra()
         letraPJ= atrilPJ[x].getLetra()
         if(letraPC != 'nulo'):
-            puntosPC = puntosPC + listaConfiguracion['PuntajeLetra'][letraPC]
+            puntosPC = puntosPC - listaConfiguracion['PuntajeLetra'][letraPC]
         if(letraPJ != 'nulo'):
-            puntosPJ = puntosPJ + listaConfiguracion['PuntajeLetra'][letraPJ]
+            puntosPJ = puntosPJ - listaConfiguracion['PuntajeLetra'][letraPJ]
     informarGanador(puntosPJ,puntosPC)
     guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
 

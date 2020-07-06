@@ -13,8 +13,8 @@ letras_cantidad={'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'
 
 def nivel_facil(letrasPuntos,letrasCantidad):
     for i in letrasPuntos.keys():
-        letrasPuntos[i] = letrasPuntos[i] *3
-        letrasCantidad[i] = letrasCantidad[i]*3
+        letrasPuntos[i] = letrasPuntos[i] *2
+        letrasCantidad[i] = letrasCantidad[i]*2
     tipoPalabra = ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS','/PRP','/JJ']
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'facil'}
