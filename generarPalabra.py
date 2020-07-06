@@ -16,6 +16,7 @@ def clasifico(palabra, tipoPalabra):
     dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
     # print(s)
     if(dato in tipoPalabra):
+        print('la palabra {} es de tipo {}'.format(palabra,dato))
         return True
 
 def es_pal(pal):
@@ -46,6 +47,7 @@ def armo_palabra(letras_palabras):
         palabras.update((map("".join, permutations(letras, i))))
     return (palabras)
 def main(mano,tipo):
+    print(mano)
     lista_palabras = armo_palabra(mano)
     palabras_adj_verb = []
     palabras_validas = []
@@ -54,8 +56,8 @@ def main(mano,tipo):
             palabras_validas.append(pal)
             if clasifico(pal, tipo):
                 palabras_adj_verb.append(pal)
-    if(palabras_validas):
-        return(palabras_validas[0])
+    if(palabras_adj_verb):
+        return(palabras_adj_verb[0])
     else:
         return None
 

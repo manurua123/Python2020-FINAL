@@ -4,6 +4,7 @@ import random
 import string
 
 from pattern.es import parse
+import pattern.es
 import time
 from datetime import datetime, date, time, timedelta
 import json
@@ -386,7 +387,7 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
         if(letraPC != 'nulo'):
             puntosPC = puntosPC - listaConfiguracion['PuntajeLetra'][letraPC]
         if(letraPJ != 'nulo'):
-            puntosPJ = puntosPJ - listaConfiguracion['PuntajeLetra'][letraPJ]
+            puntosPJ = puntosPJ + listaConfiguracion['PuntajeLetra'][letraPJ]
     informarGanador(puntosPJ,puntosPC)
     guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
 
@@ -428,9 +429,11 @@ def confirmarPalabra(Lpalabra,tipoPalabra):
         aux.append(TableroLetras[i[0]][i[1]].getLetra())
     palabra = ''.join(aux)
     if(len(palabra)>1):
-        dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
-        if(dato in tipoPalabra):
-            return True
+        if palabra in pattern.es.lexicon:
+            if palabra in pattern.es.spelling:
+                dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
+                if(dato in tipoPalabra):
+                    return True
         else:
             return False
     else:
@@ -599,11 +602,11 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Column([Atril]), sg.Column(botonesTurno)],
     ]
     columnapuntosPJ=[
-    [sg.Text('Jugador', size=(10,1))],
+    [sg.Text('JUGADOR', size=(10,1),font=("Helvetica", 12,'bold'))],
     [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
     ]
     columnapuntosPC=[
-    [sg.Text('Computadora', size=(10,1))],
+    [sg.Text('PC', size=(10,1),font=("Helvetica", 12,'bold'))],
     [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
     ]
     columnaPuntaje=[
@@ -611,10 +614,9 @@ def main(listaConfiguracion=listaPorDefecto):
 
     ]
     columnaTiempo=[
-    [sg.Text('Tiempo Partida ',size=(15,1)),sg.Text(key='timerPartida',size=(7,1)),],
-    [sg.Text('TURNO',size=(10,1))],
-    [sg.Text('---',key='contTurno')],
-    [sg.Text('Tiempo Turno',size=(15,1)),sg.Text(key='timerTurno',size=(7,1)),],
+    [sg.Text('Tiempo Partida  ',size=(13,1)),sg.Text(key='timerPartida',size=(7,1)),],
+    [sg.Text('TURNO',size=(10,1)),sg.Text('---',key='contTurno', justification='left',),sg.Text(key='timerTurno',size=(7,1))],
+
 
     ]
 
@@ -623,7 +625,7 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Column(columnaPuntaje,)],
     [sg.Column(columnaTiempo,)],
     [sg.Text('¿Que fue pasando?')],
-    [sg.Listbox('',size =(30,12),key='acciones')],
+    [sg.Listbox('',size =(23,12),key='acciones')],
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
     [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (20,2),disabled = False)],
     [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (20,2))],
@@ -636,7 +638,7 @@ def main(listaConfiguracion=listaPorDefecto):
     #Programa
 
     layout  = [
-        [sg.Text('SCREBLE_AR',font=("Helvetica", 20,'bold'),size=(50,1))],
+        [sg.Text('SCREBLEAR',font=("Helvetica", 20,'bold'),size=(50,1))],
         [sg.Column(columna1),sg.Column(columna2)],
     ]
     window = sg.Window('', layout,font=("Helvetica", 12))
@@ -681,12 +683,15 @@ def main(listaConfiguracion=listaPorDefecto):
                     puntos = sumarPuntos(formarListaPalabra(listaPoiciones),listaConfiguracion['PuntajeLetra'])
                     puntosPJ =puntosPJ + puntos
                     window['contadorPuntosPJ'].update(puntosPJ)
-                    listaAcciones.append('CORRECTO \n y sumaste {} puntos'.format(puntos))
+                    listaAcciones.append('----------------------------------')
+                    listaAcciones.append('y sumaste {} puntos'.format(puntos))
+                    listaAcciones.append('CORRECTO  ')
                     window['acciones'].update(listaAcciones[::-1])
                     del listaPoiciones[:]
                     turno = False
                 else:
                     borrarPalabras(listaPoiciones)
+                    listaAcciones.append('----------------------------------')
                     listaAcciones.append('Esa palabra no cuenta')
                     window['acciones'].update(listaAcciones[::-1])
                     del listaPoiciones[:] #vacio la lista con las letras que se usaron
@@ -696,6 +701,7 @@ def main(listaConfiguracion=listaPorDefecto):
                     turno = False
                     del listaPoiciones[:]
                 else:
+                    listaAcciones.append('----------------------------------')
                     listaAcciones.append('Todavia quedan letras en el tablero ' )
                     window['acciones'].update(listaAcciones[::-1])
             #BOTON CAMBIAR
@@ -712,6 +718,7 @@ def main(listaConfiguracion=listaPorDefecto):
                         repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
                         desbloquearJuego(window)
                     else:
+                        listaAcciones.append('----------------------------------')
                         listaAcciones.append('Todavia quedan letras en el tablero ' )
                         window['acciones'].update(listaAcciones[::-1])
                 else:
@@ -755,8 +762,9 @@ def main(listaConfiguracion=listaPorDefecto):
             if (palabra !=None):
                 puntos = sumarPuntos(colocaPalabra(palabra,TableroLetras),listaConfiguracion['PuntajeLetra'])
                 puntosPC =puntosPC + puntos
-                listaAcciones.append('La maquina encontro la plabra {}'.format(palabra))
-                listaAcciones.append('La maquina sumo {} puntos'.format(puntos))
+                listaAcciones.append('----------------------------------')
+                listaAcciones.append('La PC sumo {} puntos'.format(puntos))
+                listaAcciones.append('La PC encontro la plabra {}'.format(palabra))
                 window['acciones'].update(listaAcciones[::-1])
                 window['contadorPuntosPC'].update(puntosPC)
                 elimiarLetrasAtril(palabra,AtrilLetrasPC)
@@ -764,7 +772,7 @@ def main(listaConfiguracion=listaPorDefecto):
             turno = True
             window['contTurno'].update(cont_turno)
             cont_turno +=1;
-            sleep(1) #pasa de 1 seg porque sino va todo muy rapido
+
             desbloquearJuego(window)
             bloquearTablero()
 
