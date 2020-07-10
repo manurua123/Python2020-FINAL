@@ -12,8 +12,8 @@ from itertools import permutations
 from time import sleep
 
 #otros archivos.py
-import generarPalabra
-import test
+import bloqueos
+import turnoPC
 import cambiarLetras
 
 #configurtacion de colores
@@ -151,40 +151,6 @@ def botonTablero(nivel,x,y):
     TableroLetras[x][y] = BotonTablero(nivel,x,y)
     return TableroLetras[x][y].boton
 
-#bloqueo tablero, atril o el juego para evitar bugs
-def bloquearTablero():
-    '''bloque los botones del tablero de juego'''
-    for x in range(15):
-        for y in range(15):
-            TableroLetras[x][y].bloquear()
-def desbloquerTablero():
-    '''desbloque los botones del tablero de juego'''
-    for x in range(15):
-        for y in range(15):
-            TableroLetras[x][y].desbloquear()
-def bloquearAtril():
-    '''bloque los botones del atril del jugador'''
-    for x in range(7):
-        AtrilLetras[x].bloquear()
-def desbloquearAtril():
-    '''desbloquea los botones del atril del jugador'''
-    for x in range(7):
-        AtrilLetras[x].desbloquear()
-def bloquearJuego(window):
-    '''bloque TODOS los botones de la pantalla'''
-    bloquearAtril()
-    bloquearTablero()
-    window['Pasar'].update(disabled=True)
-    window['Confirmar'].update(disabled=True)
-    window['Cambiar'].update(disabled=True)
-def desbloquearJuego(window):
-    '''desbloquea TODOS los botones de la pantalla'''
-    desbloquearAtril()
-    desbloquerTablero()
-    window['Pasar'].update(disabled=False)
-    window['Confirmar'].update(disabled=False)
-    window['Cambiar'].update(disabled=False)
-
 #inicil de la partida
 def abrirPartida(window,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida '''
@@ -250,7 +216,7 @@ def repartirFichas(bolsa_letras,atril):
 #ventanas emergentes
 def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
-    bloquearJuego(ventana)
+    bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
         [sg.Text('¿quiere guardar la partida?')],
         [sg.Button('SI',size= (5,2)),sg.Button('NO',size= (5,2)),sg.Button('Cancelar',size= (9,2))]
@@ -261,19 +227,19 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,pu
         if event == 'SI':
             window.close()
             guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
-            desbloquearJuego(ventana)
+            bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
             return True
         if event == 'NO':
             window.close()
-            desbloquearJuego(ventana)
+            bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
             return True
         if event == 'Cancelar':
             window.close()
-            desbloquearJuego(ventana)
+            bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
             return False
 def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
-    bloquearJuego(ventana)
+    bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
         [sg.Text('¿Quiere seguir con la partida guardada?')],
         [sg.Button('SI',size= (8,2)),sg.Button('NO',size= (8,2))]
@@ -285,26 +251,26 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ
                 if event == 'SI':
                         window.close()
                         abrirPartida(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
-                        desbloquearJuego(ventana)
+                        bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
                         ventana['Comenzar'].update(disabled=True)
                         ventana['Pasar'].update(disabled=False)
                         ventana['Confirmar'].update(disabled=False)
                         ventana['Cambiar'].update(disabled=False)
-                        desbloquearAtril()
-                        bloquearTablero()
+                        bloqueos.desbloquearAtril(AtrilLetras)
+                        bloqueos.bloquearTablero(TableroLetras)
                         return True
                 else:
                     repartirFichas(listaConfiguracion['CantidadLetras'],atrilPJ)
                     repartirFichas(listaConfiguracion['CantidadLetras'],atrilPC)
                     asignarPuntajesTablero(listaConfiguracion)
                     window.close()
-                    desbloquearJuego(ventana)
+                    bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
                     ventana['Comenzar'].update(disabled=True)
                     ventana['Pasar'].update(disabled=False)
                     ventana['Confirmar'].update(disabled=False)
                     ventana['Cambiar'].update(disabled=False)
-                    desbloquearAtril()
-                    bloquearTablero()
+                    bloqueos.desbloquearAtril(AtrilLetras)
+                    bloqueos.bloquearTablero(TableroLetras)
                     return  True
     except FileNotFoundError:
         ventana_error_archivo()
@@ -336,6 +302,7 @@ def informarGanador(puntosPJ,puntosPC):
     event, values = window.read()
 
     window.close()
+
 #fin de la Partida
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
     '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
@@ -500,88 +467,6 @@ def sumarPuntos(Lpalabra,valorLetras):
             elif(tipo == 3):
                 suma = suma - valorLetras[letra]
     return (suma * aux)
-#turno de la PC
-def crearPalabra(Atril,listaConfiguracion):
-    '''crea una palabra con las letras que se pusieron en el tablero, sin no puede generar una palabra avisa por pantalla que ya no puede. '''
-    mano = []
-    palabra = ''
-    for i in range(7):
-        mano.append(Atril[i].getLetra())
-    palabra = generarPalabra.main(mano,listaConfiguracion['TipoPalabra'])
-    if(palabra != None):
-        return palabra
-    else:
-        print('ya no puede generar palabras')
-def intentoColocarPalabra(palabra,tablero):
-    '''la pc intenta colocar la palabra que formo en una ubicacion random dentro del tablero'''
-    orientacion = random.choice(['vertical','horizontal']) #la palabra va a ir Verticarl u Horizoantal
-    cant = 0
-    vacio = True
-    Lpalabra =[]
-    if(orientacion == 'horizontal'):
-        if(tablero[7][7].getEstado()==1):
-            x = random.randrange(14)
-            if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
-                x=x-len(palabra)
-            y = random.randrange(14)
-        else:
-            x = 7
-            y = 7
-
-        while (vacio) & (cant<len(palabra)):
-            if(tablero[x][y].getEstado()==0):
-                Lpalabra.append((x,y))
-            else:
-                vacio = False
-            x = x +1
-            cant = cant + 1
-        if vacio:
-            return (True,Lpalabra)
-        else:
-            return (False,None)
-    if( orientacion == 'vertical'):
-        if(tablero[7][7].getEstado()==1):
-            y = random.randrange(14)
-            if(y + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
-                y=y-len(palabra)
-            x = random.randrange(14)
-        else:
-            x = 7
-            y = 7
-
-        while (vacio) & (cant<len(palabra)):
-            if(tablero[x][y].getEstado()==0):
-                Lpalabra.append((x,y))
-            else:
-                vacio = False
-            y = y +1
-            cant = cant + 1
-        if vacio:
-            return (True,Lpalabra)
-        else:
-            return (False,None)
-def colocaPalabra(palabra,tablero):
-    '''la pc coloca la palabra en una ubicacion random permitida dentro del tablero'''
-    aux = intentoColocarPalabra(palabra,tablero)
-    while(aux[0] == False):
-        aux = intentoColocarPalabra(palabra,tablero)
-    numero = 0
-    while(numero < len(palabra)):
-        i = aux[1][numero]
-        TableroLetras[i[0]][i[1]].setLetra(palabra[numero])
-        numero = numero +1
-    return(aux[1])
-def elimiarLetrasAtril(palabra,atril):
-     mano = []
-     for i in range(7):
-         mano.append(atril[i].getLetra())
-     for i in palabra:
-         aux = 0
-         while(mano[aux]!=i):
-             aux = aux +1
-         atril[aux].vaciar()
-
-
 
 def main(listaConfiguracion=listaPorDefecto):
     #Interface grafica
@@ -616,10 +501,7 @@ def main(listaConfiguracion=listaPorDefecto):
     columnaTiempo=[
     [sg.Text('Tiempo Partida  ',size=(13,1)),sg.Text(key='timerPartida',size=(7,1)),],
     [sg.Text('TURNO',size=(10,1)),sg.Text('---',key='contTurno', justification='left',),sg.Text(key='timerTurno',size=(7,1))],
-
-
     ]
-
     #contiene los puntajes y el tiempo que resta del turno
     columna2= [
     [sg.Column(columnaPuntaje,)],
@@ -629,10 +511,7 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
     [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (20,2),disabled = False)],
     [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (20,2))],
-
-
     ]
-
     cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
     cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
     #Programa
@@ -708,16 +587,20 @@ def main(listaConfiguracion=listaPorDefecto):
             if event is 'Cambiar':
                 if (intentosCambio <3):
                     if(len(listaPoiciones)==0):
-                        bloquearJuego(window)
+                        bloqueos.bloquearJuego(window,TableroLetras,AtrilLetras)
                         letrasCambio = cambiarLetras.main(AtrilLetras,listaConfiguracion)
                         if (letrasCambio):
                             intentosCambio =intentosCambio+1
                             for i in letrasCambio:
                                 AtrilLetras[i].vaciar()
                                 listaConfiguracion['CantidadLetras'][AtrilLetras[i].getLetra()] =+1
-                        repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
-                        desbloquearJuego(window)
-                        turno = False
+                            repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
+                            turno = False
+                            bloqueos.desbloquearJuego(window,TableroLetras,AtrilLetras)
+                        else:
+                            bloqueos.desbloquearJuego(window,TableroLetras,AtrilLetras)
+                            bloqueos.bloquearTablero(TableroLetras)
+
                     else:
                         listaAcciones.append('----------------------------------')
                         listaAcciones.append('Todavia quedan letras en el tablero ' )
@@ -731,7 +614,7 @@ def main(listaConfiguracion=listaPorDefecto):
             letraAtril = event
             letra = AtrilLetras[int(letraAtril[1])].getLetra()
             if(TableroLetras[7][7].getEstado() == 1):
-                desbloquerTablero()
+                bloqueos.desbloquerTablero(TableroLetras)
             else:
                 TableroLetras[7][7].desbloquear()
 
@@ -744,11 +627,11 @@ def main(listaConfiguracion=listaPorDefecto):
                 TableroLetras[cord[0]][cord[1]].setLetra(letra) #asigno la letra a la posicion
                 AtrilLetras[int(letraAtril[1])].vaciar()  #elimino esa ficha del atril
                 listaPoiciones.append(cord)
-            bloquearTablero()
+            bloqueos.bloquearTablero(TableroLetras)
 
         #TURNO DE LA PC
         if (not turno) or (contadorTiempoTurno == (100*listaConfiguracion['TiempoTurno'])):
-            bloquearJuego(window)
+            bloqueos.bloquearJuego(window,TableroLetras,AtrilLetras)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
             repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
             if listaPoiciones: #si todavia quedan letras en el tablero que no son una palabra
@@ -758,24 +641,24 @@ def main(listaConfiguracion=listaPorDefecto):
 
             contadorTiempoTurno = 0
             lPalabra =[]
-            palabra = crearPalabra(AtrilLetrasPC,listaConfiguracion)
+            palabra = turnoPC.crearPalabra(AtrilLetrasPC,listaConfiguracion,listaAcciones,window)
 
             if (palabra !=None):
-                puntos = sumarPuntos(colocaPalabra(palabra,TableroLetras),listaConfiguracion['PuntajeLetra'])
+                puntos = sumarPuntos(turnoPC.colocaPalabra(palabra,TableroLetras),listaConfiguracion['PuntajeLetra'])
                 puntosPC =puntosPC + puntos
                 listaAcciones.append('----------------------------------')
                 listaAcciones.append('La PC sumo {} puntos'.format(puntos))
-                listaAcciones.append('La PC encontro la plabra {}'.format(palabra))
+                listaAcciones.append('La PC encontro "{}"'.format(palabra))
                 window['acciones'].update(listaAcciones[::-1])
                 window['contadorPuntosPC'].update(puntosPC)
-                elimiarLetrasAtril(palabra,AtrilLetrasPC)
+                turnoPC.elimiarLetrasAtril(palabra,AtrilLetrasPC)
 
             turno = True
             window['contTurno'].update(cont_turno)
             cont_turno +=1;
 
-            desbloquearJuego(window)
-            bloquearTablero()
+            bloqueos.desbloquearJuego(window,TableroLetras,AtrilLetras)
+            bloqueos.bloquearTablero(TableroLetras)
 
     window.close()
 if __name__ == '__main__':
