@@ -288,11 +288,11 @@ def informarGanador(puntosPJ,puntosPC):
         resultado = 'PERDISTE'
 
     layout = [
-        [sg.Text(resultado,font=("Arial", 20),pad=(2,2))],
-        [sg.Text('{} a {}'.format(puntosPJ,puntosPC),font=("Arial", 20),pad=(2,2))],
-        [sg.OK(size=(10,2))]
+        [sg.Text(resultado,font=("Arial", 20),size=(200,1))],
+        [sg.Text('{} a {}'.format(puntosPJ,puntosPC),font=("Arial", 15),size=(200,1))],
+        [sg.OK(size=(10,2),pad=(50,4))]
               ]
-    window = sg.Window('', layout)
+    window = sg.Window('', layout,size=(200,120),text_justification='center')
     event, values = window.read()
 
     window.close()
@@ -348,7 +348,7 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
         if(letraPC != 'nulo'):
             puntosPC = puntosPC - listaConfiguracion['PuntajeLetra'][letraPC]
         if(letraPJ != 'nulo'):
-            puntosPJ = puntosPJ + listaConfiguracion['PuntajeLetra'][letraPJ]
+            puntosPJ = puntosPJ - listaConfiguracion['PuntajeLetra'][letraPJ]
     informarGanador(puntosPJ,puntosPC)
     guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
 
@@ -446,6 +446,7 @@ def sumarPuntos(Lpalabra,valorLetras):
     aux = 1
 
     for i in Lpalabra:
+        print(i)
         letra = TableroLetras[i[0]][i[1]].getLetra()
         tipo =  TableroLetras[i[0]][i[1]].getTipo()
         if(letra != 'nulo'):
@@ -494,14 +495,14 @@ def main(listaConfiguracion=listaPorDefecto):
 
     ]
     columnaTiempo=[
-    [sg.Text('Tiempo Partida  ',size=(13,1)),sg.Text(key='timerPartida',size=(7,1)),],
-    [sg.Text('TURNO',size=(10,1)),sg.Text('---',key='contTurno', justification='left',),sg.Text(key='timerTurno',size=(7,1))],
+    [sg.Text('Tiempo Partida ',size=(13,1),font=("Arial", 12,'bold')),sg.Text(key='timerPartida',size=(7,1),),],
+    [sg.Text('TURNO',size=(6,1),font=("Arial", 12,'bold')),sg.Text('--',key='contTurno', justification='left',size=(6,1),font=("Arial", 12,'bold')),sg.Text(key='timerTurno',size=(7,1))],
     ]
     #contiene los puntajes y el tiempo que resta del turno
     columna2= [
     [sg.Column(columnaPuntaje,)],
     [sg.Column(columnaTiempo,)],
-    [sg.Text('¿Que fue pasando?')],
+    [sg.Text('¿Que fue pasando?',font=("Arial", 12,'bold'))],
     [sg.Listbox('',size =(23,12),key='acciones')],
     [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (24,2))],
     [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (24,2),disabled = False)],
@@ -543,6 +544,7 @@ def main(listaConfiguracion=listaPorDefecto):
             contadorTiempoPartida = contadorTiempoPartida +1
         if event is None or event == 'Salir':
             if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)):
+                finalPartida(AtrilLetras,AtrilLetrasPC,puntosPJ,puntosPC,listaConfiguracion)
                 guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
                 break
         #TURNO DEl JUGADOR

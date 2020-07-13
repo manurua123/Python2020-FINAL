@@ -24,7 +24,7 @@ listaConfiguracion={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h
 'TiempoTurno': 60,
 'TiempoPartida': 1,
 'TipoTablero':1,
-'Nivel': 'facil'}
+'Nivel': 'medio'}
 
 window = sg.Window('', layout, text_justification='center',size= (400,380),font=("Arial", 16))
 while True:
