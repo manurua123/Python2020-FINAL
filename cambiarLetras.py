@@ -1,13 +1,7 @@
 import PySimpleGUI as sg
 import juego
 
-sg.SetOptions(background_color='#222831',
-       text_element_background_color='#222831',
-       element_background_color='#9FB8AD',
-       button_color=('#222831','#00adb5'),
-       text_justification='center',
-       border_width=1,
-       )
+
 
 def main(atrilPJ,listaConfiguracion):
 

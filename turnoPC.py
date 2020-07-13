@@ -13,7 +13,7 @@ def clasifico(palabra, tipoPalabra):
     dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
     # print(s)
     if(dato in tipoPalabra):
-        print('la palabra {} es de tipo {}'.format(palabra,dato))
+        #print('la palabra {} es de tipo {}'.format(palabra,dato))
         return True
 def es_pal(pal):
     '''
@@ -22,9 +22,9 @@ def es_pal(pal):
     :return: True si es, False caso contrario
     '''
     if pal in pattern.es.lexicon:
-        print(pal + " en lexicon ")
+        #print(pal + " en lexicon ")
         if pal in pattern.es.spelling:
-            print(pal + " en spelling ")
+            #print(pal + " en spelling ")
             return True
     return False
 def armo_palabra(letras_palabras):
@@ -43,7 +43,7 @@ def armo_palabra(letras_palabras):
         palabras.update((map("".join, permutations(letras, i))))
     return (palabras)
 def generarPalabra(mano,tipo):
-    print(mano)
+    #print(mano)
     lista_palabras = armo_palabra(mano)
     palabras_adj_verb = []
     palabras_validas = []

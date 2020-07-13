@@ -17,13 +17,7 @@ import turnoPC
 import cambiarLetras
 
 #configurtacion de colores
-sg.SetOptions(background_color='#222831',
-       text_element_background_color='#222831',
-       element_background_color='#9FB8AD',
-       button_color=('#222831','#00adb5'),
-       text_justification='center',
-       border_width=1,
-       )
+
 #valores para testear
 listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},
 'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1},
@@ -42,7 +36,7 @@ class BotonLetra():
         self.bloqueo = True  #bloquea el boton para evitar bugs
         self.key = (x,y)
         self.nivel = nivel
-        self.boton  = sg.Button( image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#e0dede'),)
+        self.boton  = sg.Button( image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#fbfbfb'),)
         self.tipo = 0
     def update(self):
         self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo)
@@ -218,10 +212,10 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,pu
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
-        [sg.Text('¿quiere guardar la partida?')],
-        [sg.Button('SI',size= (5,2)),sg.Button('NO',size= (5,2)),sg.Button('Cancelar',size= (9,2))]
+        [sg.Text('¿quiere guardar la partida?',pad=(0,10),font=("Arial", 14),justification='center',size=(24,0))],
+        [sg.Button('SI',size= (9,2)),sg.Button('NO',size= (9,2)),sg.Button('Cancelar',size= (9,2))]
     ]
-    window = sg.Window('', layout,font=("Helvetica", 12))
+    window = sg.Window('', layout,)
     event , values = window.read()
     while  True:
         if event == 'SI':
@@ -241,10 +235,10 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
     bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
-        [sg.Text('¿Quiere seguir con la partida guardada?')],
-        [sg.Button('SI',size= (8,2)),sg.Button('NO',size= (8,2))]
+        [sg.Text('¿Quiere seguir con la partida guardada?',pad=(0,10),font=("Arial", 14))],
+        [sg.Button('SI',size= (9,2),pad=(10,2)),sg.Button('NO',size= (9,2),pad=(10,2))]
     ]
-    window = sg.Window('', layout,font=("Helvetica", 12))
+    window = sg.Window('', layout,size=(360,100))
     event , values = window.read()
     try:
         while  True:
@@ -294,8 +288,8 @@ def informarGanador(puntosPJ,puntosPC):
         resultado = 'PERDISTE'
 
     layout = [
-        [sg.Text(resultado,font=("Helvetica", 20),pad=(2,2))],
-        [sg.Text('{} a {}'.format(puntosPJ,puntosPC),font=("Helvetica", 20),pad=(2,2))],
+        [sg.Text(resultado,font=("Arial", 20),pad=(2,2))],
+        [sg.Text('{} a {}'.format(puntosPJ,puntosPC),font=("Arial", 20),pad=(2,2))],
         [sg.OK(size=(10,2))]
               ]
     window = sg.Window('', layout)
@@ -432,7 +426,7 @@ def cambioMano(atrilPJ,listaConfiguracion):
     ]
 
 
-    window = sg.Window('', layout2,font=("Helvetica", 12))
+    window = sg.Window('', layout2,font=("Arial", 12))
 
     while True:
         event, values = window.read(timeout=10)
@@ -480,21 +474,22 @@ def main(listaConfiguracion=listaPorDefecto):
     ]
     #Contiene el tablero de juego y atril con las fichas de la mano
     columna1 = [
-    [sg.Text('ATRIL Computadora',size=(30,1),font=("Helvetica", 15))],
+    [sg.Text('ATRIL Computadora',size=(30,1),font=("Arial", 15))],
     [sg.Column([AtrilPC])],
     [sg.Column(Tablero)],
-    [sg.Text('ATRIL Jugador',size=(30,1),font=("Helvetica", 15))],
+    [sg.Text('ATRIL Jugador',size=(30,1),font=("Arial", 15))],
     [sg.Column([Atril]), sg.Column(botonesTurno)],
     ]
     columnapuntosPJ=[
-    [sg.Text('JUGADOR', size=(10,1),font=("Helvetica", 12,'bold'))],
+    [sg.Text('JUGADOR', size=(10,1),font=("Arial", 12,'bold'))],
     [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
     ]
     columnapuntosPC=[
-    [sg.Text('PC', size=(10,1),font=("Helvetica", 12,'bold'))],
+    [sg.Text('PC', size=(10,1),font=("Arial", 12,'bold'))],
     [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
     ]
     columnaPuntaje=[
+
     [sg.Column(columnapuntosPJ),sg.Column(columnapuntosPC)],
 
     ]
@@ -508,19 +503,19 @@ def main(listaConfiguracion=listaPorDefecto):
     [sg.Column(columnaTiempo,)],
     [sg.Text('¿Que fue pasando?')],
     [sg.Listbox('',size =(23,12),key='acciones')],
-    [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (20,2))],
-    [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (20,2),disabled = False)],
-    [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (20,2))],
+    [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (24,2))],
+    [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (24,2),disabled = False)],
+    [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (24,2))],
     ]
     cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13'] #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
     cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
     #Programa
 
     layout  = [
-        [sg.Text('SCREBLEAR',font=("Helvetica", 20,'bold'),size=(50,1))],
+        [sg.Image(filename='imagenes/logo.png',background_color='#abbccf',size= (960,50))],
         [sg.Column(columna1),sg.Column(columna2)],
     ]
-    window = sg.Window('', layout,font=("Helvetica", 12))
+    window = sg.Window('', layout,font=("Arial", 12))
     puntosPJ = 0
     puntosPC = 0
     cont_turno = 1
