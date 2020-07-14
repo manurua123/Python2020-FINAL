@@ -26,7 +26,7 @@ listaConfiguracion={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h
 'TipoTablero':1,
 'Nivel': 'medio'}
 
-window = sg.Window('', layout, text_justification='center',size= (400,380),font=("Arial", 16))
+window = sg.Window('', layout, text_justification='center',size= (450,380),font=("Arial", 16))
 while True:
     event, value = window.read()
     if event is None or event == 'Salir':
