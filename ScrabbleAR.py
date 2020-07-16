@@ -1,7 +1,9 @@
 import configuracion
-import PySimpleGUI as sg
 import juego
 import puntajes
+
+import PySimpleGUI as sg
+
 sg.SetOptions(background_color='#abbccf',
        text_element_background_color='#abbccf',
        text_color='#222831',

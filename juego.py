@@ -8,6 +8,7 @@ import json
 from itertools import permutations
 
 #otros archivos.py
+
 import bloqueos
 import turnoPC
 import turnoJugador
