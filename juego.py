@@ -418,6 +418,7 @@ def main(listaConfiguracion=listaPorDefecto):
 
     try:
         while True:
+
             #si llega el tiempo final o quedan menos de 8 letras termina la partida
             if((contadorTiempoPartida==(6000*listaConfiguracion['TiempoPartida'])) | (sum(listaConfiguracion['CantidadLetras'].values()) <8)):
                 finalPartida(AtrilLetras,AtrilLetrasPC,puntosPJ,puntosPC,listaConfiguracion)
@@ -431,6 +432,7 @@ def main(listaConfiguracion=listaPorDefecto):
             if(comenzar):
                 contadorTiempoTurno = contadorTiempoTurno +1
                 contadorTiempoPartida = contadorTiempoPartida +1
+
             if event is None or event == 'Salir':
                 if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)):
                     finalPartida(AtrilLetras,AtrilLetrasPC,puntosPJ,puntosPC,listaConfiguracion)
@@ -438,6 +440,7 @@ def main(listaConfiguracion=listaPorDefecto):
                     break
             #TURNO DEl JUGADOR
             if event is 'Comenzar':
+                print(listaConfiguracion['PuntajeLetra'])
                 comenzar = ventana_comenzar(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)
                 window['contTurno'].update(cont_turno)
                 turno = random.choice([True,False])
@@ -516,7 +519,6 @@ def main(listaConfiguracion=listaPorDefecto):
             #TURNO DE LA PC
             if (not turno) or (contadorTiempoTurno == (100*listaConfiguracion['TiempoTurno'])):
                 bloqueos.bloquearJuego(window,TableroLetras,AtrilLetras)
-                repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
                 repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetras)
                 if listaPoiciones: #si todavia quedan letras en el tablero que no son una palabra
                     turnoJugador.borrarPalabras(listaPoiciones,TableroLetras,AtrilLetras)
@@ -539,6 +541,7 @@ def main(listaConfiguracion=listaPorDefecto):
                 cont_turno +=1;
                 bloqueos.desbloquearJuego(window,TableroLetras,AtrilLetras)
                 bloqueos.bloquearTablero(TableroLetras)
+                repartirFichas(listaConfiguracion['CantidadLetras'],AtrilLetrasPC)
 
         window.close()
     except: #por si cerras el ventana en lugar de apretar el boton salir.

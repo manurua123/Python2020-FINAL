@@ -5,21 +5,23 @@ letras_puntos={'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8
 letras_cantidad={'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1}
 
 def nivel_facil(letrasPuntos,letrasCantidad):
+    letrasPuntosF={}
+    letrasCantidadF={}
     for i in letrasPuntos.keys():
-        letrasPuntos[i] = letrasPuntos[i] *2
-        letrasCantidad[i] = letrasCantidad[i]*2
+        letrasPuntosF[i] = letrasPuntos[i] *2
+        letrasCantidadF[i] = letrasCantidad[i]*2
     tipoPalabra = ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS','/PRP','/JJ','/PRP$','/NN','/DT','/VBG',]
-    return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'facil'}
+    return {'PuntajeLetra':letrasPuntosF,'CantidadLetras':letrasCantidadF,'TipoPalabra':tipoPalabra,'TipoTablero':1,'Nivel': 'facil'}
 
 def nivel_medio(letrasPuntos,letrasCantidad):
     tipoPalabra = ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS','/VBG',]
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':2,'Nivel': 'medio'}
 
-def nivel_dificil(letrasPuntos,letrasCantidad):
-    letras_puntos={'a':1,'b':2,'c':2,'d':2,'e':1,'f':2,'g':2,'h':2,'i':1,'j':3,'k':4,'l':1,'m':1,'n':1,'o':1,'p':1,'q':4,'r':1,'s':1,'t':1,'u':1,'v':2,'w':4,'x':4,'y':2,'z':5}
-    letras_cantidad={'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1}
+def nivel_dificil():
+    letrasPuntos={'a':1,'b':2,'c':2,'d':2,'e':1,'f':2,'g':2,'h':2,'i':1,'j':3,'k':4,'l':1,'m':1,'n':1,'o':1,'p':1,'q':4,'r':1,'s':1,'t':1,'u':1,'v':2,'w':4,'x':4,'y':2,'z':5}
+    letrasCantidad={'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1}
     tipos= ['/VB','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG',
                  '/VSI', '/VSN', '/VSP', '/VSS','/VBG',]
     tipoPalabra=list(random.choice(tipos))
@@ -57,7 +59,7 @@ def main():
             window['Dificil'].update(disabled=False)
             window['Confirmar'].update(disabled=False)
         if event == 'Dificil':
-            listaConfiguracion = nivel_dificil(letras_puntos,letras_cantidad)
+            listaConfiguracion = nivel_dificil()
             window['Facil'].update(disabled=False)
             window['Medio'].update(disabled=False)
             window['Dificil'].update(disabled=True)

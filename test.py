@@ -1,6 +1,12 @@
 from pattern.es import parse
-aux = 1
-while(aux < 1000):
-    palabra = input("¿Cómo se llama? ")
-    dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
-    print('{} es {}'.format(palabra,dato))
+import pattern
+while True:
+    palabra = input("Ingrasa una palabra: ")
+    if palabra in pattern.es.lexicon:
+        if palabra in pattern.es.spelling:
+            dato = parse(palabra,tokenize = True,tags = True,chunks = False).replace(palabra,'')
+            print('{} es de tipo {}'.format(palabra,dato))
+        else:
+            print('{} no esta en spelling'.format(palabra))
+    else:
+        print('{} No esta en lexicon'.format(palabra))
