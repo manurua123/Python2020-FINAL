@@ -23,12 +23,10 @@ def formarListaPalabra(listaLetras,tablero,atril):
     if(len(palabraH)>len(palabraV)):
         palabraV.pop(0)
         borrarPalabras(palabraV,tablero,atril)
-        print(palabraH)
         return palabraH
     else:
         palabraH.pop(0)
         borrarPalabras(palabraH,tablero,atril)
-        print(palabraV)
         return palabraV
 def confirmarPalabra(Lpalabra,tipoPalabra,tablero):
     '''
@@ -38,7 +36,7 @@ def confirmarPalabra(Lpalabra,tipoPalabra,tablero):
     for i in Lpalabra:
         aux.append(tablero[i[0]][i[1]].getLetra())
     palabra = ''.join(aux)
-    
+
     if(len(palabra)>1):
         if palabra in pattern.es.lexicon:
             if palabra in pattern.es.spelling:

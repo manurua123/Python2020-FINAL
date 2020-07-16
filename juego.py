@@ -31,10 +31,10 @@ class BotonLetra():
         self.bloqueo = True  #bloquea el boton para evitar bugs
         self.key = (x,y)
         self.nivel = nivel
-        self.boton  = sg.Button( image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#fbfbfb'),)
+        self.boton  = sg.Button( image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#fbfbfb'),)
         self.tipo = 0
     def update(self):
-        self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo)
+        self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo)
     def getLetra(self):
         return self.valor
     def setLetra(self,v):
@@ -69,7 +69,7 @@ class BotonLetra():
     def marcar(self):
         self.estado = 0
         self.bloqueo = True
-        self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo,button_color=('#222831','#f6d743'))
+        self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo,button_color=('#222831','#f6d743'))
         return self.valor
 class BotonAtril(BotonLetra):
     def __init__ (self,nivel,x):
@@ -84,19 +84,19 @@ class BotonTablero(BotonLetra):
         if (valor ==1):
             self.tipo=valor
             self.valor='palabrax2'
-            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#21bf73')) #PALABRA x2
+            self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#21bf73')) #PALABRA x2
         if(valor== 2):
             self.tipo=valor
             self.valor='letrax2'
-            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#4f98ca')) #LETRAS x2
+            self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#4f98ca')) #LETRAS x2
         if(valor== 3):
             self.tipo=valor
             self.valor='restaletra'
-            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#fd5e53')) #Resta Letra
+            self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('black','#fd5e53')) #Resta Letra
         if(valor == 4):
             self.tipo=valor
             self.valor='centro'
-            self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('#222831','#e0dede')) #centro
+            self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),button_color=('#222831','#e0dede')) #centro
         else:
             None
 class BotonesAtrilPC():
@@ -108,10 +108,10 @@ class BotonesAtrilPC():
         self.key = (x,0)
         self.nivel = nivel
         self.tipo = 0
-        self.boton  = sg.Button(image_filename='imagenes/fichas/{}/secreto.png'.format(self.nivel),key = self.key,disabled=self.bloqueo,pad=(1,1),)
+        self.boton  = sg.Button(image_filename='archivos/imagenes/fichas/{}/secreto.png'.format(self.nivel),key = self.key,disabled=self.bloqueo,pad=(1,1),)
 
     def update(self):
-        self.boton.update(image_filename='imagenes/fichas/{}/secreto.png'.format(self.nivel))
+        self.boton.update(image_filename='archivos/imagenes/fichas/{}/secreto.png'.format(self.nivel))
     def getLetra(self):
         return self.valor
     def setLetra(self,v):
@@ -124,7 +124,7 @@ class BotonesAtrilPC():
         self.estado = 0
         self.update()
     def getTipo(self, letra):
-        self.boton.update(image_filename='imagenes/fichas/{}/{}.png'.format(self.nivel,letra),disabled=False)
+        self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,letra),disabled=False)
 
 #Atril del la maquina, del jugador y el tablero de juego
 AtrilLetrasPC = [0 for y in range(7)]                                           #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
@@ -146,7 +146,7 @@ def botonTablero(nivel,x,y):
 #inicil de la partida
 def abrirPartida(window,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida '''
-    with open('partidaGuardada.json','r+') as file:
+    with open('archivos/partidaGuardada.json','r+') as file:
         datos = json.load(file)
     for x in range(15):
         for y in range(15):
@@ -332,11 +332,11 @@ def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
     datos['puntosPJ'] = puntosPJ
     datos['puntosPC'] = puntosPC
     try:
-        with open('partidaGuardada.json','r+') as file:
+        with open('archivos/partidaGuardada.json','r+') as file:
             file.write(json.dumps(datos))
             file.truncate()
     except FileNotFoundError:
-        with open('partidaGuardada.json','w') as file:
+        with open('archivos/partidaGuardada.json','w') as file:
             file.write(json.dumps(datos))
             file.truncate()
 def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
@@ -350,7 +350,7 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
         if(letraPJ != 'nulo'):
             puntosPJ = puntosPJ - listaConfiguracion['PuntajeLetra'][letraPJ]
     informarGanador(puntosPJ,puntosPC)
-    guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
+    guardarPuntaje(listaConfiguracion,puntosPJ,'archivos/archivoPuntajes.json')
 
 def main(listaConfiguracion=listaPorDefecto):
     #Interface grafica
@@ -400,7 +400,7 @@ def main(listaConfiguracion=listaPorDefecto):
     cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13']     #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
     cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
     layout  = [
-        [sg.Image(filename='imagenes/logo.png',background_color='#abbccf',size= (960,50))],
+        [sg.Image(filename='archivos/imagenes/logo.png',background_color='#abbccf',size= (960,50))],
         [sg.Column(columna1),sg.Column(columna2)],
     ]
     #Programa
@@ -436,11 +436,10 @@ def main(listaConfiguracion=listaPorDefecto):
             if event is None or event == 'Salir':
                 if(ventana_salir(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)):
                     finalPartida(AtrilLetras,AtrilLetrasPC,puntosPJ,puntosPC,listaConfiguracion)
-                    guardarPuntaje(listaConfiguracion,puntosPJ,'archivoPuntajes.json')
+                    guardarPuntaje(listaConfiguracion,puntosPJ,'archivos/archivoPuntajes.json')
                     break
             #TURNO DEl JUGADOR
             if event is 'Comenzar':
-                print(listaConfiguracion['PuntajeLetra'])
                 comenzar = ventana_comenzar(window,TableroLetras,AtrilLetras,AtrilLetrasPC,listaConfiguracion,puntosPJ,puntosPC)
                 window['contTurno'].update(cont_turno)
                 turno = random.choice([True,False])

@@ -50,7 +50,7 @@ def main():
     sg.Button('Nivel dificil' , size=(15,2) , tooltip='los 10 mejores puntajes del nivel medio', auto_size_button=False,),sg.Button('Todos' , size=(15,2) , tooltip='los 10 mejores puntajes en general', auto_size_button=False,)]
     ]
     layout_puntajes = [
-      [sg.Image(filename='imagenes/puntajes.png',background_color='#abbccf',size= (5600,50))],
+      [sg.Image(filename='archivos/imagenes/puntajes.png',background_color='#abbccf',size= (5600,50))],
      [sg.Column(botones,pad=(10,0) )],
      [sg.Listbox('',size =(100,10),key='listbox',background_color='#abbccf'),],
      [sg.Button('Atras',size=(15,2),pad=(10,0))],
@@ -64,19 +64,19 @@ def main():
                 break
             if event == 'Nivel facil':
                 del lista[:]
-                mostrarValores(abrirArchivo('archivoPuntajes.json','facil'),lista)
+                mostrarValores(abrirArchivo('archivos/archivoPuntajes.json','facil'),lista)
                 window.FindElement('listbox').Update(lista);
             if event == 'Nivel medio':
                 del lista[:]
-                mostrarValores(abrirArchivo('archivoPuntajes.json','medio'),lista)
+                mostrarValores(abrirArchivo('archivos/archivoPuntajes.json','medio'),lista)
                 window.FindElement('listbox').Update(lista);
             if event == 'Nivel dificil':
                 del lista[:]
-                mostrarValores(abrirArchivo('archivoPuntajes.json','dificil'),lista)
+                mostrarValores(abrirArchivo('archivos/archivoPuntajes.json','dificil'),lista)
                 window.FindElement('listbox').Update(lista);
             if event == 'Todos':
                 del lista[:]
-                mostrarValoresTotal('archivoPuntajes.json',lista)
+                mostrarValoresTotal('archivos/archivoPuntajes.json',lista)
                 window.FindElement('listbox').Update(lista);
         except FileNotFoundError:
             ventana_error_archivo()

@@ -11,7 +11,7 @@ sg.SetOptions(background_color='#abbccf',
        border_width=1,
        )
 layout = [
-[sg.Image(filename='imagenes/logo.png',background_color='#abbccf',size= (5600,100))],
+[sg.Image(filename='archivos/imagenes/logo.png',background_color='#abbccf',size= (5600,100))],
     [sg.Button('Jugar',size= (30,1),pad=(50,6))],
     [sg.Button('Configurar',size= (30,1),pad=(50,6))],
     [sg.Button('Puntajes',size= (30,1),pad=(50,6))],

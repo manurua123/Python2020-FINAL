@@ -27,7 +27,6 @@ def nivel_dificil():
     tipoPalabra=list(random.choice(tipos))
     return {'PuntajeLetra':letrasPuntos,'CantidadLetras':letrasCantidad,'TipoPalabra':tipoPalabra,'TipoTablero':3,'Nivel': 'dificil'}
 
-
 def main():
     layout = [
         [sg.Text('Duracion del TURNO',size = (25,1)), sg.Slider(background_color='#abbccf',range = (10, 120),orientation = 'h', size = (20,20), default_value = 60, key = 'tiempoTurno',tooltip='Duracion del turno en segundos')],
