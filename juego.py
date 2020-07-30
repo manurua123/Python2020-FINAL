@@ -128,17 +128,17 @@ class BotonesAtrilPC():
         self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,letra),disabled=False)
 
 #Atril del la maquina, del jugador y el tablero de juego
-AtrilLetrasPC = [0 for y in range(7)]                                           #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
+AtrilLetrasPC = [0 for y in range(7)]
 def botonesAtrilPC(nivel,x):
     '''genera un boton en la cordenada x'''
     AtrilLetrasPC[x] =  BotonesAtrilPC(nivel,x)
     return AtrilLetrasPC[x].boton
-AtrilLetras = [0 for y in range(7)]                                             #creo una lista de vacia con 7 lugares [0,0,0,0,0,0,0,0]
+AtrilLetras = [0 for y in range(7)]
 def botonesAtril(nivel,x,atril):
     '''genera un boton en la pocicion x del atril'''
     atril[x] = BotonAtril(nivel,x)
     return atril[x].boton
-TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]               #creo una matriz de 15x15 vacia
+TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]
 def botonTablero(nivel,x,y):
     '''genera un boton en las cordenadas (x,y)'''
     TableroLetras[x][y] = BotonTablero(nivel,x,y)
@@ -220,15 +220,14 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,pu
         if event == 'SI':
             window.close()
             guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
-            bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
             return True
         if event == 'NO':
             window.close()
-            bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
             return True
         if event == 'Cancelar':
             window.close()
             bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
+            bloqueos.bloquearTablero(tablero)
             return False
 def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
     '''bloquea el juego y depues confirma si el juegador quiere salir'''
@@ -283,6 +282,8 @@ def informarGanador(puntosPJ,puntosPC):
     '''
     if(puntosPC<puntosPJ):
         resultado = 'GANASTE'
+    elif(puntosPC == puntosPJ):
+        resultado = 'EMPATE'
     else:
         resultado = 'PERDISTE'
 
@@ -354,51 +355,55 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
     guardarPuntaje(listaConfiguracion,puntosPJ,'archivos/archivoPuntajes.json')
 
 def main(listaConfiguracion=listaPorDefecto):
-    #Interface grafica
-    Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilLetras)for x in range(7)]                #creo el atril de 7 botones
-    AtrilPC = [botonesAtrilPC(listaConfiguracion['Nivel'],x)for x in range(7)]                        #creo el atril de 7 botones para la PC
-    Tablero = [[botonTablero(listaConfiguracion['Nivel'],x,y) for x in range(15)] for y in range(15)] #creo el el trablero de 15x15 botones
+    '''
+    metodo prencipal
+    '''
+    #atril de 7 botones del jugador
+    Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilLetras)for x in range(7)]
+    #atril de 7 botones de la PC
+    AtrilPC = [botonesAtrilPC(listaConfiguracion['Nivel'],x)for x in range(7)]
+    #tablero de 15x15 botones
+    Tablero = [[botonTablero(listaConfiguracion['Nivel'],x,y) for x in range(15)] for y in range(15)]
     botonesTurno= [
-    [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (12,2)),
-    sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (12,2)),
-    sg.Button('Pasar',tooltip='Pasar turno',disabled=True,size= (12,2))],
+        [sg.Button('Confirmar',tooltip='Probar si la plabra es correcta',disabled=True,size= (12,2)),
+        sg.Button('Cambiar',tooltip='cambiar Fichas',disabled=True,size= (12,2)),
+        sg.Button('Pasar',tooltip='Pasar turno',disabled=True,size= (12,2))],
     ]
+
     #Contiene el tablero de juego y atril con las fichas de la mano
     columna1 = [
-    [sg.Text('ATRIL Computadora',size=(30,1),font=("Arial", 15))],
-    [sg.Column([AtrilPC])],
-    [sg.Column(Tablero)],
-    [sg.Text('ATRIL Jugador',size=(30,1),font=("Arial", 15))],
-    [sg.Column([Atril]), sg.Column(botonesTurno)],
+        [sg.Text('ATRIL Computadora',size=(30,1),font=("Arial", 15))],
+        [sg.Column([AtrilPC])],
+        [sg.Column(Tablero)],
+        [sg.Text('ATRIL Jugador',size=(30,1),font=("Arial", 15))],
+        [sg.Column([Atril]), sg.Column(botonesTurno)],
     ]
     columnapuntosPJ=[
-    [sg.Text('JUGADOR', size=(10,1),font=("Arial", 12,'bold'))],
-    [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
+        [sg.Text('JUGADOR', size=(10,1),font=("Arial", 12,'bold'))],
+        [sg.Text('---',key ='contadorPuntosPJ', size=(10,1))]
     ]
     columnapuntosPC=[
-    [sg.Text('PC', size=(10,1),font=("Arial", 12,'bold'))],
-    [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
-    ]
+        [sg.Text('PC', size=(10,1),font=("Arial", 12,'bold'))],
+        [sg.Text('---',key ='contadorPuntosPC', size=(10,1))]
+        ]
     columnaPuntaje=[
-
-    [sg.Column(columnapuntosPJ),sg.Column(columnapuntosPC)],
-
+        [sg.Column(columnapuntosPJ),sg.Column(columnapuntosPC)],
     ]
     columnaTiempo=[
-    [sg.Text('Tiempo Partida ',size=(13,1),font=("Arial", 12,'bold')),sg.Text(key='timerPartida',size=(7,1),),],
-    [sg.Text('TURNO',size=(6,1),font=("Arial", 12,'bold')),sg.Text('--',key='contTurno', justification='left',size=(6,1),font=("Arial", 12,'bold')),sg.Text(key='timerTurno',size=(7,1))],
+        [sg.Text('Tiempo Partida ',size=(13,1),font=("Arial", 12,'bold')),sg.Text(key='timerPartida',size=(7,1),),],
+        [sg.Text('TURNO',size=(6,1),font=("Arial", 12,'bold')),sg.Text('--',key='contTurno', justification='left',size=(6,1),font=("Arial", 12,'bold')),sg.Text(key='timerTurno',size=(7,1))],
     ]
     #contiene los puntajes y el tiempo que resta del turno
     columna2= [
-    [sg.Column(columnaPuntaje,)],
-    [sg.Column(columnaTiempo,)],
-    [sg.Text('¿Que fue pasando?',font=("Arial", 12,'bold'))],
-    [sg.Listbox('',size =(23,12),key='acciones')],
-    [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (24,2))],
-    [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (24,2),disabled = False)],
-    [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (24,2))],
+        [sg.Column(columnaPuntaje,)],
+        [sg.Column(columnaTiempo,)],
+        [sg.Text('¿Que fue pasando?',font=("Arial", 12,'bold'))],
+        [sg.Listbox('',size =(23,12),key='acciones')],
+        [sg.Button('Comenzar',auto_size_button=False,tooltip='Comenzar Partida',size= (24,2))],
+        [sg.Button('Guardar',auto_size_button=False,tooltip='Guarda la partida',size= (24,2),disabled = False)],
+        [sg.Button('Salir',auto_size_button=False,tooltip='Salir al menu',size= (24,2))],
     ]
-    cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13']     #no se me ocurrio una forma mejor, las cordenasd de las letras se guardan de una forma extraña
+    cordAtril = ['(0, 0)7','(1, 0)8','(2, 0)9','(3, 0)10','(4, 0)11','(5, 0)12','(6, 0)13']
     cordTablero = [(a,b) for a in range(0,15) for b in range(0,15)]
     layout  = [
         [sg.Image(filename='archivos/imagenes/logo.png',background_color='#abbccf',size= (960,50))],
