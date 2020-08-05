@@ -38,7 +38,8 @@ En este se pueden observar el top 10 de puntajes en cada una de las dificultades
   * [Manuel Rua](https://github.com/manurua123)
   
 ## Licencia :unlock:
-  GNU General Public License v3.0
+  [GNU General Public License v3.0](https://github.com/manurua123/Python2020-FINAL/blob/master/LICENSE)
+  Todas las imágenes son de mi autoría y son de uso libre
   
 ## Agradecimientos :balloon:
   * [Tomás Barbieri](https://github.com/tomibarbieri) - _Ayudante_ 
