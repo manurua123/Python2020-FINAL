@@ -1,8 +1,22 @@
 import random
 import PySimpleGUI as sg
+import json
 
-letras_puntos={'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10}
-letras_cantidad={'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1}
+def abrirArchivo(ruta):
+    with open(ruta) as file:
+        data = json.load(file)
+        file.close()
+    return(data)
+def ventana_error_archivo():
+    '''
+    indica que el archivo que se busca no existe en la ubicacion seleccionada
+    '''
+    layout = [[sg.Text('no se encontro el archivo de configuracion',pad=(0,10),font=("Arial", 14),justification='center',size=(24,0))],
+              [sg.OK(size=(32,2))]
+              ]
+    window = sg.Window('ERROR', layout)
+    event, values = window.read()
+    window.close()
 
 def nivel_facil(letrasPuntos,letrasCantidad):
     letrasPuntosF={}
@@ -38,21 +52,26 @@ def main():
         [sg.Button('Confirmar',disabled=True,size= (20,2)),sg.Button('Cancelar',size= (20,2),)],
     ]
     window = sg.Window('Configuracion', layout, text_justification='center',size= (420,220),font=('Arial', 13))
+    try:
+        listaConfiguracion = abrirArchivo('archivos/configuracion.json')
+    except FileNotFoundError:
+        ventana_error_archivo()
+
     while True:
         event, value = window.read()
         if event is None or event == 'Cancelar':
-            listaConfiguracion = nivel_medio(letras_puntos,letras_cantidad)
+            listaConfiguracion = nivel_medio(listaConfiguracion['PuntajeLetra'],listaConfiguracion['CantidadLetras'])
             listaConfiguracion['TiempoTurno'] = 60
             listaConfiguracion['TiempoPartida'] =10
             break
         if event == 'Facil':
-            listaConfiguracion = nivel_facil(letras_puntos,letras_cantidad)
+            listaConfiguracion = nivel_facil(listaConfiguracion['PuntajeLetra'],listaConfiguracion['CantidadLetras'])
             window['Facil'].update(disabled=True)
             window['Medio'].update(disabled=False)
             window['Dificil'].update(disabled=False)
             window['Confirmar'].update(disabled=False)
         if event == 'Medio':
-            listaConfiguracion = nivel_medio(letras_puntos,letras_cantidad)
+            listaConfiguracion = nivel_medio(listaConfiguracion['PuntajeLetra'],listaConfiguracion['CantidadLetras'])
             window['Facil'].update(disabled=False)
             window['Medio'].update(disabled=True)
             window['Dificil'].update(disabled=False)
