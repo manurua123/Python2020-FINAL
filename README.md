@@ -22,7 +22,7 @@ Contiene todo lo referido a la partida, el tablero, el atril de cada jugador, el
 * **Fácil:** todas las letras otorgan mayor cantidad de putos, se aumenta el número de vocales, el tablero contiene muchos más multiplicadores y se admiten todo tipo de palabras.
 * **Medio:** la cantidad de letras y el puntaje es similar al original al igual que el tablero, solo se admite verbos y adjetivos.
 * **Difícil:** se reduce el puntaje de cada letra y la cantidad, el tablero contiene más casilleros de penalización y solo se admite verbos y adjetivos.
-![tableros de juego](https://github.com/manurua123/Python2020-FINAL/blob/master/archivos/imagenes/tableros.png)
+![tableros de juego](https://github.com/manurua123/Python2020-FINAL/blob/master/archivos/imagenes/Tableros.png)
 ### Puntajes
 En este se pueden observar el top 10 de puntajes en cada una de las dificultades (Fácil, Medio y Difícil) junto con la fecha y además un top 10 general de todas las puntaciones guardadas.
 
