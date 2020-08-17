@@ -343,7 +343,6 @@ def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
             file.truncate()
 def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
     for x in range(7):
-
         letraPC = atrilPC[x].getLetra()
         atrilPC[x].getTipo(letraPC)
         letraPJ= atrilPJ[x].getLetra()
@@ -421,6 +420,7 @@ def main(listaConfiguracion=listaPorDefecto):
     comenzar = False            #camienza el jeugo apretando comenzar
     intentosCambio = 0          #cantidad de cambios que le quedan al jugador
     listaAcciones = []          #carga las distintas acciones que pasan cada turno
+
 
     try:
         while True:

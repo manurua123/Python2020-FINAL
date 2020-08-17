@@ -6,12 +6,12 @@ ScrabbleAR es un juego basado en el popular juego Scrabble, en el que se intenta
 
 
 ## Requisitos 📋
-### Software 
+### Software
   * [Python 3.6.8](https://www.python.org/downloads/release/python-368/) :snake:
-### Librerias 
+### Librerias
   * [PySimpleGUI 4.18.0](https://github.com/PySimpleGUI/PySimpleGUI/) - _interface grafica_
   * [Pattern 3.6](https://github.com/clips/pattern/) - _Procesamiento del lenguaje natural_
-### Sistema Operativo 
+### Sistema Operativo
   [Windows 10 version 1909](https://support.microsoft.com/es-ar/help/4517245/feature-update-via-windows-10-version-1909-enablement-package)   
   [Ubuntu 20.04 LTS](https://ubuntu.com/)
 ## Contenido :open_file_folder:
@@ -29,16 +29,16 @@ En este se pueden observar el top 10 de puntajes en cada una de las dificultades
 
 ## Como ejecutar **ScrabbleAR.py** 🚀
   1. Compruebar que todas las librerías y programas necesarios están instalados
-  
+
   2. Descomprimir que el contendio del repositorio en la misma carpeta
-  
+
   3. Ejercutar el archivo ScrabbleAR.py
 
-## Autores ✒️ 
+## Autores ✒️
   * [Manuel Rua](https://github.com/manurua123)
-  
+
 ## Licencia :unlock:
   GNU General Public License v3.0
-  
+
 ## Agradecimientos :balloon:
-  * [Tomás Barbieri](https://github.com/tomibarbieri) - _Ayudante_ 
+  * [Tomás Barbieri](https://github.com/tomibarbieri) - _Ayudante_
