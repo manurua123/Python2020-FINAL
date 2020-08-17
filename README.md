@@ -1,7 +1,7 @@
 # ScrabbleAR.py
 _Seminario de Lenguajes 2020 Python, Facultad de Informatica, U.N.L.P._
 ## Informacion :pushpin:
-ScrabbleAR es un juego basado en el popular juego Scrabble, en el que se intenta ganar puntos mediante la construcción de palabras sobre un tablero. En ScrabbleAR se juega contra la computadora y se redefinen algunas de las reglas del juego original. En particular, respecto a las palabras a construir, sólo se podrán utilizar palabras clasificadas como adjetivos, sustantivos y verbos, de acuerdo a cómo se configure el juego
+ScrabbleAR es un juego basado en el popular juego [Scrabble](https://es.wikipedia.org/wiki/Scrabble), en el que se intenta ganar puntos mediante la construcción de palabras sobre un tablero. En ScrabbleAR se juega contra la computadora y se redefinen algunas de las reglas del juego original. En particular, respecto a las palabras a construir, sólo se podrán utilizar palabras clasificadas como adjetivos, sustantivos y verbos, de acuerdo a cómo se configure el juego
 
 
 
