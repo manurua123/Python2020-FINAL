@@ -71,47 +71,37 @@ def crearPalabra(Atril,listaConfiguracion,listaAcciones,ventana):
         ventana['acciones'].update(listaAcciones[::-1])
 def intentoColocarPalabra(palabra,tablero):
     '''la pc intenta colocar la palabra que formo en una ubicacion random dentro del tablero'''
-    orientacion = random.choice(['vertical','horizontal']) #la palabra va a ir Verticarl u Horizoantal
+    orientacion = random.choice(['vertical','horizontal'])
     cant = 0
     vacio = True
     Lpalabra =[]
+    if(tablero[7][7].getEstado()==1):
+        a = random.randrange(14)
+        if(a + len(palabra)>=15):
+            a=a-len(palabra)
+        b = random.randrange(14)
+    else:
+        a = 7
+        b = 7
     if(orientacion == 'horizontal'):
-        if(tablero[7][7].getEstado()==1):
-            x = random.randrange(14)
-            if(x + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
-                x=x-len(palabra)
-            y = random.randrange(14)
-        else:
-            x = 7
-            y = 7
-
         while (vacio) & (cant<len(palabra)):
-            if(tablero[x][y].getEstado()==0):
-                Lpalabra.append((x,y))
+            if(tablero[a][b].getEstado()==0):
+                Lpalabra.append((a,b))
             else:
                 vacio = False
-            x = x +1
+            a = a +1
             cant = cant + 1
         if vacio:
             return (True,Lpalabra)
         else:
             return (False,None)
     if( orientacion == 'vertical'):
-        if(tablero[7][7].getEstado()==1):
-            y = random.randrange(14)
-            if(y + len(palabra)>=15): #evita elegir una cordenada que exeda el tablero
-                y=y-len(palabra)
-            x = random.randrange(14)
-        else:
-            x = 7
-            y = 7
-
         while (vacio) & (cant<len(palabra)):
-            if(tablero[x][y].getEstado()==0):
-                Lpalabra.append((x,y))
+            if(tablero[b][a].getEstado()==0):
+                Lpalabra.append((b,a))
             else:
                 vacio = False
-            y = y +1
+            a = a +1
             cant = cant + 1
         if vacio:
             return (True,Lpalabra)
