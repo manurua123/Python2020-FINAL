@@ -14,16 +14,11 @@ import turnoPC
 import turnoJugador
 import cambiarLetras
 
-#valores para testear
-listaPorDefecto={'PuntajeLetra':{'a':1,'b':3,'c':2,'d':2,'e':1,'f':4,'g':2,'h':4,'i':1,'j':6,'k':8,'l':1,'m':3,'n':1,'o':1,'p':3,'q':8,'r':1,'s':1,'t':1,'u':1,'v':4,'w':8,'x':8,'y':4,'z':10},
-'CantidadLetras':{'a':11,'b':3,'c':4,'d':4,'e':11,'f':2,'g':2,'h':2,'i':6,'j':2,'k':1,'l':4,'m':3,'n':5,'o':8,'p':2,'q':1,'r':4,'s':7,'t':4,'u':6,'v':2,'w':2,'x':1,'y':1,'z':1},
-'TipoPalabra':['/WP','/AO', '/JJ', '/AQ', '/DI', '/DT','/VAG', '/VBG', '/VAI', '/VAN', '/MD', '/VAS', '/VMG', '/VMI', '/VB', '/VMM', '/VMN', '/VMP', '/VBN', '/VMS', '/VSG', '/VSI', '/VSN', '/VSP', '/VSS'],
-'TiempoTurno': 30,
-'TiempoPartida':1,
-'TipoTablero':2,
-'Nivel': 'medio'}
 #clases de los botones, tablero, atril pc y atril jugador
 class BotonLetra():
+    '''
+    botones que foman el tablero de juego y el atril del jugador.
+    '''
     def __init__ (self,nivel,x,y=0,):
         self.valor= 'nulo'
         self.x = x
@@ -130,17 +125,35 @@ class BotonesAtrilPC():
 #Atril del la maquina, del jugador y el tablero de juego
 AtrilLetrasPC = [0 for y in range(7)]
 def botonesAtrilPC(nivel,x):
-    '''genera un boton en la cordenada x'''
+    '''genera un boton en la cordenada x
+
+    Parametros:
+    nivel -- nivel de dificultad
+    x -- posicion en el atril
+    '''
     AtrilLetrasPC[x] =  BotonesAtrilPC(nivel,x)
     return AtrilLetrasPC[x].boton
 AtrilLetras = [0 for y in range(7)]
 def botonesAtril(nivel,x,atril):
-    '''genera un boton en la pocicion x del atril'''
+    '''genera un boton en la pocicion x del atril
+
+    Parametros:
+    nivel -- nivel de dificultad
+    x -- posicion en el atril
+    atril -- matriz de 1x7
+
+    '''
     atril[x] = BotonAtril(nivel,x)
     return atril[x].boton
 TableroLetras = [[' ' for a in range(0,15)] for b in range(0,15)]
 def botonTablero(nivel,x,y):
-    '''genera un boton en las cordenadas (x,y)'''
+    '''genera un boton en las cordenadas (x,y)
+
+    Parametros:
+    nivel -- nivel de dificultad
+    x -- posicion en el eje horizontal del Tablero
+    y -- posicion en el eje vertical del Tablero
+    '''
     TableroLetras[x][y] = BotonTablero(nivel,x,y)
     return TableroLetras[x][y].boton
 
@@ -297,7 +310,7 @@ def informarGanador(puntosPJ,puntosPC):
 
     window.close()
 
-#fin de la Partida
+#fin de la Partidabg
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
     '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
     with open(ruta,'r+') as file:
@@ -353,7 +366,7 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
     informarGanador(puntosPJ,puntosPC)
     guardarPuntaje(listaConfiguracion,puntosPJ,'archivos/archivoPuntajes.json')
 
-def main(listaConfiguracion=listaPorDefecto):
+def main(listaConfiguracion):
     '''
     metodo prencipal
     '''

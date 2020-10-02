@@ -1,9 +1,18 @@
 import PySimpleGUI as sg
 import juego
 
-
-
 def main(atrilPJ,listaConfiguracion):
+    '''
+    cambia las letras del atril de JUGADOR
+
+    Parametros:
+    atrilPJ -- el atril del juegador donde estan las letrasPuntos
+    listaConfiguracion -- contienee todos los valores de configuracion del juego.
+
+    Retorna:
+    lista -- contiene las fichas que se desean cambiar.
+
+    '''
 
     AtrilCambiar = [0 for x in range(7)] #atril de 7 elementos
     Atril = [juego.botonesAtril(listaConfiguracion['Nivel'],x,AtrilCambiar) for x in range(7)] #creo en cada elemento del atril un boton
@@ -24,10 +33,9 @@ def main(atrilPJ,listaConfiguracion):
         if(aux):
             for i in range(7):
                 AtrilCambiar[i].setLetra(atrilPJ[i].getLetra())
-                #AtrilCambiar[i].setLetra('x')
                 AtrilCambiar[i].desbloquear()
             aux = False
-        if event in cordAtril:  #se preciona algun boton en el atril
+        if event in cordAtril:
             letra = AtrilCambiar[event[0]].marcar()
             lista.append(event[0])
         if event is 'Confirmar':
