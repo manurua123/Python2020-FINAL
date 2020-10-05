@@ -30,6 +30,9 @@ class BotonLetra():
         self.boton  = sg.Button( image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor), image_size=(40, 40),key = self.key,disabled=self.bloqueo,pad=(1,1), button_color=('#222831','#fbfbfb'),)
         self.tipo = 0
     def update(self):
+        '''
+        actualiza los valores del boton.
+        '''
         self.boton.update(image_filename='archivos/imagenes/fichas/{}/{}.png'.format(self.nivel,self.valor),disabled=self.bloqueo)
     def getLetra(self):
         return self.valor
@@ -59,7 +62,7 @@ class BotonLetra():
     def getEstado(self):
         return self.estado
     def setEstado(self,e):
-        self.estado = e
+        self.estado = 1
     def getTipo(self):
         return self.tipo
     def marcar(self):
@@ -76,6 +79,12 @@ class BotonTablero(BotonLetra):
     def tipoCelda(self,valor):
         '''
         actualiza el color y el tipo de boton segun los multiplicadores que tenga
+        Parametros:
+        valor -- indica el multiplicador que ira en el casillero.
+            1 = multiplica el valor de la palabra por 2
+            2 = multiplica el valor de la letra por 2
+            3 = resta el valor de la letra
+            4 = indica el centro del tablero
         '''
         if (valor ==1):
             self.tipo=valor
@@ -159,14 +168,26 @@ def botonTablero(nivel,x,y):
 
 #inicil de la partida
 def abrirPartida(window,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
-    '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida '''
+    '''abre un .json con el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y lo añade a la partida
+
+    Parametros:
+    window -- Ventana generada por PySimpleGUI
+    tablero -- tablero de juego de 15x15
+    atrilPJ -- atril de 7 fichas del Jugador
+    atrilPC -- atril de 7 fichas de la Computadora
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    puntosPJ -- entero que indica la cantidada de puntos del jugador
+    puntosPC -- entero que indica la cantidad de puntos de la computadora
+
+    '''
     with open('archivos/partidaGuardada.json','r+') as file:
         datos = json.load(file)
     for x in range(15):
         for y in range(15):
-            tablero[x][y].setLetra(datos['tablero']['{},{}'.format(x,y)])
-            tablero[x][y].tipoCelda(datos['tipoTablero']['{},{}'.format(x,y)])
+
             tablero[x][y].setEstado(datos['estadoTablero']['{},{}'.format(x,y)])
+            tablero[x][y].tipoCelda(datos['tipoTablero']['{},{}'.format(x,y)])
+            tablero[x][y].setLetra(datos['tablero']['{},{}'.format(x,y)])
     for x in range(7):
         atrilPJ[x].setLetra(datos['atrilPJ']['{}'.format(x)])
         atrilPC[x].setLetra(datos['atrilPC']['{}'.format(x)])
@@ -175,53 +196,76 @@ def abrirPartida(window,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,punt
     puntosPJ = datos['puntosPJ']
     window['contadorPuntosPJ'].update(puntosPJ)
     window['contadorPuntosPC'].update(puntosPC)
-def asignarPuntajesTablero(listaConfiguracion):
-    '''asigna un tipo especifico a cada boton del tablero'''
+def asignarPuntajesTablero(listaConfiguracion,tablero):
+    '''asigna un tipo especifico a cada boton del Tablero
+
+    Parametros:
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+        tablero -- tablero de juego de 15x15
+    '''
     if (listaConfiguracion['TipoTablero']==1):
         for i in range(15):
             for j in range(15):
                 if(i+j==14)|(i==j): #DIAGONAL
-                    TableroLetras[i][j].tipoCelda(1)
+                    tablero[i][j].tipoCelda(1)
                 if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
-                    TableroLetras[i][j].tipoCelda(2) #medio
+                    tablero[i][j].tipoCelda(2) #medio
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
-                    TableroLetras[i][j].tipoCelda(3) #extremos
+                    tablero[i][j].tipoCelda(3) #extremos
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(4)
+                    tablero[i][j].tipoCelda(4)
     elif(listaConfiguracion['TipoTablero']==2):
         for i in range(15):
             for j in range(15):
                 if(i+j==14)|(i==j):
-                    TableroLetras[i][j].tipoCelda(2)
+                    tablero[i][j].tipoCelda(2)
                 if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
-                    TableroLetras[i][j].tipoCelda(1)
+                    tablero[i][j].tipoCelda(1)
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
-                    TableroLetras[i][j].tipoCelda(3)
+                    tablero[i][j].tipoCelda(3)
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(4)
+                    tablero[i][j].tipoCelda(4)
     elif(listaConfiguracion['TipoTablero']==3):
         for i in range(15):
             for j in range(15):
                 if(i+j==14)|(i==j):
-                    TableroLetras[i][j].tipoCelda(3)
+                    tablero[i][j].tipoCelda(3)
                 if(((i==0) &((j+1)%4==0))|((j==0) &((i+1)%4==0))|((i==14) &((j+1)%4==0))|((j==14) &((i+1)%4==0))|(((i+1)%4==0)&((j+1)%4==0))):
-                    TableroLetras[i][j].tipoCelda(2)
+                    tablero[i][j].tipoCelda(2)
                 if(((i==0) &((j+1)%8==0))|((j==0) &((i+1)%8==0))|((i==14) &((j+1)%8==0))|((j==14) &((i+1)%8==0))|(((i+1)%8==0)&((j+1)%8==0))):
-                    TableroLetras[i][j].tipoCelda(1)
+                    tablero[i][j].tipoCelda(1)
                 if(i==7)&(j==7):
-                    TableroLetras[i][j].tipoCelda(4)
-def repartirFichas(bolsa_letras,atril):
-    '''reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc'''
+                    tablero[i][j].tipoCelda(4)
+def repartirFichas(bolsaLetras,atril):
+    '''reparte fichas de la bolsa de letras por cada boton vacio en el atril del jugador o de la pc
+
+    Parametros:
+    bolsaLetras -- diccionario con cada letra y la cantidad que existen en juegador
+    atril -- atril del jugador o la pc que contiene maximo 7 fichas
+
+    '''
     for i in range(7):
         if(atril[i].getLetra() == 'nulo'):
             letra = random.choice(string.ascii_letters).lower()
-            while(bolsa_letras[letra] == 0):
+            while(bolsaLetras[letra] == 0):
                 letra = random.choice(string.ascii_letters).lower()
             atril[i].setLetra(letra)
 
 #ventanas emergentes
 def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
-    '''bloquea el juego y depues confirma si el juegador quiere salir'''
+    '''bloquea el juego y depues confirma si el juegador quiere salir
+
+    Parametros:
+    ventana -- Ventana generada por PySimpleGUI
+    tablero -- tablero de juego de 15x15
+    atrilPJ -- atril de 7 fichas del Jugador
+    atrilPC -- atril de 7 fichas de la Computadora
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    puntosPJ -- entero que indica la cantidada de puntos del jugador
+    puntosPC -- entero que indica la cantidad de puntos de la computadora
+
+
+    '''
     bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
         [sg.Text('¿quiere guardar la partida?',pad=(0,10),font=("Arial", 14),justification='center',size=(24,0))],
@@ -243,7 +287,17 @@ def ventana_salir(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,pu
             bloqueos.bloquearTablero(tablero)
             return False
 def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
-    '''bloquea el juego y depues confirma si el juegador quiere salir'''
+    '''bloquea el juego y depues confirma si el juegador quiere salir
+
+    Parametros:
+    ventana -- Ventana generada por PySimpleGUI
+    tablero -- tablero de juego de 15x15
+    atrilPJ -- atril de 7 fichas del Jugador
+    atrilPC -- atril de 7 fichas de la Computadora
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    puntosPJ -- entero que indica la cantidada de puntos del jugador
+    puntosPC -- entero que indica la cantidad de puntos de la computadora
+    '''
     bloqueos.bloquearJuego(ventana,tablero,atrilPJ)
     layout = [
         [sg.Text('¿Quiere seguir con la partida guardada?',pad=(0,10),font=("Arial", 14))],
@@ -267,7 +321,7 @@ def ventana_comenzar(ventana,tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ
                 else:
                     repartirFichas(listaConfiguracion['CantidadLetras'],atrilPJ)
                     repartirFichas(listaConfiguracion['CantidadLetras'],atrilPC)
-                    asignarPuntajesTablero(listaConfiguracion)
+                    asignarPuntajesTablero(listaConfiguracion,TableroLetras)
                     window.close()
                     bloqueos.desbloquearJuego(ventana,tablero,atrilPJ)
                     ventana['Comenzar'].update(disabled=True)
@@ -292,6 +346,10 @@ def ventana_error_archivo():
 def informarGanador(puntosPJ,puntosPC):
     '''
     indica que finalizo la partida y da un ganador
+
+    Parametros:
+    puntosPj -- entero que indica puntos del JUGADOR
+    puntosPC -- entero que indica puntos de la Computadora
     '''
     if(puntosPC<puntosPJ):
         resultado = 'GANASTE'
@@ -312,7 +370,15 @@ def informarGanador(puntosPJ,puntosPC):
 
 #fin de la Partidabg
 def guardarPuntaje(listaConfiguracion,puntaje,ruta):
-    '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo'''
+    '''guarda la fecha, el puntaje y el nivel de dificultad en un archivo
+
+    Parametros:
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    puntaje -- entero que indica la cantidad de puntos del JUGADOR
+    ruta -- direccion especifica del archivo donde se va a guardar el puntaje
+
+
+    '''
     with open(ruta,'r+') as file:
         json_data = json.load(file)
         fecha = datetime.now()  # Obtiene fecha y hora actual
@@ -323,7 +389,18 @@ def guardarPuntaje(listaConfiguracion,puntaje,ruta):
         file.write(json.dumps(json_data))
         file.truncate()
 def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC):
-    '''recibe el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y guarda toda esa informacion en un .json '''
+    '''recibe el tablero de juego, el atril del jugador, el de la PC y la cantidad de letras existentes y guarda toda esa informacion en un .json
+
+    Parametros:
+    ventana -- Ventana generada por PySimpleGUI
+    tablero -- tablero de juego de 15x15
+    atrilPJ -- atril de 7 fichas del Jugador
+    atrilPC -- atril de 7 fichas de la Computadora
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    puntosPJ -- entero que indica la cantidada de puntos del jugador
+    puntosPC -- entero que indica la cantidad de puntos de la computadora
+
+    '''
     datos = {}
     datoTablero={}
     tipoTablero={}
@@ -355,6 +432,16 @@ def guardarPartida(tablero,atrilPJ,atrilPC,listaConfiguracion,puntosPJ,puntosPC)
             file.write(json.dumps(datos))
             file.truncate()
 def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
+    '''
+    Se ejecuta cuando se termina la partida, calcula los puntajes finales, informa al ganador y guarda el resultado
+
+    Parametros:
+    atrilPJ -- atril de 7 fichas del Jugador
+    atrilPC -- atril de 7 fichas de la Computadora
+    puntosPJ -- entero que indica la cantidada de puntos del jugador
+    puntosPC -- entero que indica la cantidad de puntos de la computadora
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
+    '''
     for x in range(7):
         letraPC = atrilPC[x].getLetra()
         atrilPC[x].getTipo(letraPC)
@@ -369,6 +456,8 @@ def finalPartida(atrilPJ,atrilPC,puntosPJ,puntosPC,listaConfiguracion):
 def main(listaConfiguracion):
     '''
     metodo prencipal
+    Parametros:
+    listaConfiguracion -- un diccionario que contiene la configuracion del juegador
     '''
     #atril de 7 botones del jugador
     Atril = [botonesAtril(listaConfiguracion['Nivel'],x,AtrilLetras)for x in range(7)]
